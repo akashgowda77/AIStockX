@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Analysis - AIStockX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/stock.css">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar Overlay (mobile) -->
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-icon">AI</div>
+                <div class="brand-text">AIStock<span>X</span></div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">Main</div>
+                <a href="dashboard.html" class="nav-item" data-page="dashboard">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="stock.html" class="nav-item active" data-page="stock">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Stock Analysis</span>
+                </a>
+                <a href="prediction.html" class="nav-item" data-page="prediction">
+                    <i class="fas fa-brain"></i>
+                    <span>AI Predictions</span>
+                </a>
+                <a href="comparison.html" class="nav-item" data-page="comparison">
+                    <i class="fas fa-balance-scale"></i>
+                    <span>Model Comparison</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Navbar -->
+            <header class="navbar">
+                <div class="navbar-left">
+                        <button class="mobile-menu-btn" onclick="toggleSidebar()" title="Toggle navigation menu" aria-label="Toggle navigation menu">
+                    <h1 class="page-title">Stock Analysis</h1>
+                </div>
+                <div class="navbar-right">
+                    <div class="navbar-user"></div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="page-content">
+                <!-- Stock Search Bar -->
+                <div class="stock-search-bar fade-in">
+                    <div class="search-box" style="max-width:100%;">
+                        <i class="fas fa-search search-icon"></i>
+                        <input
+                            type="text"
+                            id="stockSymbolInput"
+                            placeholder="Enter stock symbol (e.g., AAPL, MSFT, TSLA)"
+                            value=""
+                            onkeydown="if(event.key==='Enter') loadStock()"
+                        >
+                    </div>
+                    <button class="btn btn-primary" onclick="loadStock()">
+                        <i class="fas fa-search"></i> Analyze
+                    </button>
+                </div>
+
+                <!-- Loading State -->
+                <div id="stockLoading" class="hidden">
+                    <div class="card" style="text-align:center;padding:60px 24px;">
+                        <div class="spinner-ring" style="margin:0 auto 16px;"></div>
+                        <p style="color:var(--color-text-muted);">Loading stock data...</p>
+                    </div>
+                </div>
+
+                <!-- Stock Header (Symbol + Name + Price) -->
+                <div id="stockHeader" class="stock-header hidden fade-in"></div>
+
+                <!-- Company Info + Quote Grid -->
+                <div id="stockOverview" class="hidden">
+                    <div class="grid grid-2 mt-4">
+                        <div class="card fade-in" id="companyCard">
+                            <div class="card-header">
+                                <h3><i class="fas fa-building"></i> Company Profile</h3>
+                            </div>
+                            <div class="card-body" id="companyInfo">
+                                <p class="text-muted">Loading company information...</p>
+                            </div>
+                        </div>
+                        <div class="card fade-in fade-in-delay-1" id="quoteCard">
+                            <div class="card-header">
+                                <h3><i class="fas fa-dollar-sign"></i> Current Quote</h3>
+                            </div>
+                            <div class="card-body" id="quoteInfo">
+                                <p class="text-muted">Loading quote data...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Price Chart -->
+                <div id="priceChartSection" class="hidden mt-6">
+                    <div class="card fade-in">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-line"></i> Historical Price</h3>
+                            <div class="chart-period-selector">
+                                <button class="period-btn active" data-period="1mo" onclick="changePeriod('1mo')">1M</button>
+                                <button class="period-btn" data-period="3mo" onclick="changePeriod('3mo')">3M</button>
+                                <button class="period-btn" data-period="6mo" onclick="changePeriod('6mo')">6M</button>
+                                <button class="period-btn" data-period="1y" onclick="changePeriod('1y')">1Y</button>
+                                <button class="period-btn" data-period="2y" onclick="changePeriod('2y')">2Y</button>
+                                <button class="period-btn" data-period="5y" onclick="changePeriod('5y')">5Y</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="priceChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Volume Chart -->
+                <div id="volumeChartSection" class="hidden mt-4">
+                    <div class="card fade-in fade-in-delay-1">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-bar"></i> Volume</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container chart-container-sm">
+                                <canvas id="volumeChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technical Indicators -->
+                <div id="indicatorsSection" class="hidden mt-6">
+                    <div class="card fade-in">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-bar"></i> Technical Indicators</h3>
+                        </div>
+                        <div class="card-body">
+                            <!-- Trend Signal -->
+                            <div id="trendSignal" class="trend-signal-container"></div>
+
+                            <div class="divider"></div>
+
+                            <!-- Indicator Values Grid -->
+                            <div id="indicatorValues" class="indicator-grid"></div>
+
+                            <div class="divider"></div>
+
+                            <!-- Indicator Charts -->
+                            <div class="indicator-charts">
+                                <div class="indicator-chart-item">
+                                    <h4 class="indicator-chart-title">RSI (14)</h4>
+                                    <div class="chart-container chart-container-sm">
+                                        <canvas id="rsiChart"></canvas>
+                                    </div>
+                                </div>
+                                <div class="indicator-chart-item">
+                                    <h4 class="indicator-chart-title">MACD</h4>
+                                    <div class="chart-container chart-container-sm">
+                                        <canvas id="macdChart"></canvas>
+                                    </div>
+                                </div>
+                                <div class="indicator-chart-item">
+                                    <h4 class="indicator-chart-title">Stochastic Oscillator</h4>
+                                    <div class="chart-container chart-container-sm">
+                                        <canvas id="stochChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error State -->
+                <div id="stockError" class="hidden mt-4">
+                    <div class="card" style="text-align:center;padding:60px 24px;">
+                        <i class="fas fa-exclamation-circle" style="font-size:3rem;color:var(--color-danger);display:block;margin-bottom:16px;"></i>
+                        <h3 style="margin-bottom:8px;">Failed to Load Stock Data</h3>
+                        <p id="errorMessage" style="color:var(--color-text-muted);margin-bottom:20px;"></p>
+                        <button class="btn btn-primary" onclick="loadStock()">
+                            <i class="fas fa-redo"></i> Try Again
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/stock.js"></script>
+</body>
+</html>

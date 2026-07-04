@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Predictions - AIStockX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/prediction.css">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar Overlay (mobile) -->
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-icon">AI</div>
+                <div class="brand-text">AIStock<span>X</span></div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">Main</div>
+                <a href="dashboard.html" class="nav-item" data-page="dashboard">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="stock.html" class="nav-item" data-page="stock">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Stock Analysis</span>
+                </a>
+                <a href="prediction.html" class="nav-item active" data-page="prediction">
+                    <i class="fas fa-brain"></i>
+                    <span>AI Predictions</span>
+                </a>
+                <a href="comparison.html" class="nav-item" data-page="comparison">
+                    <i class="fas fa-balance-scale"></i>
+                    <span>Model Comparison</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Navbar -->
+            <header class="navbar">
+                <div class="navbar-left">
+<button class="mobile-menu-btn" onclick="toggleSidebar()" title="Toggle navigation menu" aria-label="Toggle navigation menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="page-title">AI Predictions</h1>
+                </div>
+                <div class="navbar-right">
+                    <div class="navbar-user"></div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="page-content">
+                <!-- Stock Search Bar -->
+                <div class="pred-search-bar fade-in">
+                    <div class="search-box" style="max-width:100%;">
+                        <i class="fas fa-search search-icon"></i>
+                        <input
+                            type="text"
+                            id="predSymbolInput"
+                            placeholder="Enter stock symbol (e.g., AAPL, MSFT, TSLA)"
+                            value=""
+                            onkeydown="if(event.key==='Enter') loadPredictionPage()"
+                        >
+                    </div>
+                    <button class="btn btn-primary" onclick="loadPredictionPage()">
+                        <i class="fas fa-search"></i> Load
+                    </button>
+                </div>
+
+                <!-- Model Selection Info -->
+                <div class="pred-intro fade-in fade-in-delay-1">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3><i class="fas fa-robot" style="color:var(--color-primary);"></i> Machine Learning Models</h3>
+                            <p style="color:var(--color-text-secondary);margin-top:8px;line-height:1.7;">
+                                Train and evaluate two ML models on historical stock data. 
+                                <strong>Linear Regression</strong> provides a baseline forecast using engineered features.
+                                <strong>LSTM</strong> is a deep learning model that captures sequential patterns in price movements.
+                                Each model must be trained before generating predictions.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prediction Content -->
+                <div id="predContent" class="hidden mt-6">
+                    <!-- Two-model grid -->
+                    <div class="grid grid-2">
+                        <!-- Linear Regression Card -->
+                        <div class="model-card card fade-in" id="linearCard">
+                            <div class="model-card-header">
+                                <div class="model-icon" style="background:var(--color-primary-bg);color:var(--color-primary);">
+                                    <i class="fas fa-chart-simple"></i>
+                                </div>
+                                <div>
+                                    <h3>Linear Regression</h3>
+                                    <p class="model-subtitle">scikit-learn • Ridge Regularization</p>
+                                </div>
+                                <span class="model-badge badge badge-info" id="linearStatusBadge">Not Trained</span>
+                            </div>
+                            <div class="model-card-body" id="linearBody">
+                                <div class="model-actions">
+                                    <button class="btn btn-primary btn-sm" id="linearTrainBtn" onclick="trainModel('linear')">
+                                        <i class="fas fa-graduation-cap"></i> Train
+                                    </button>
+                                    <button class="btn btn-outline btn-sm" id="linearPredictBtn" onclick="predictModel('linear')" disabled>
+                                        <i class="fas fa-crystal-ball"></i> Predict
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm" id="linearRetrainBtn" onclick="retrainModel('linear')">
+                                        <i class="fas fa-redo"></i> Retrain
+                                    </button>
+                                </div>
+                                <div id="linearTraining" class="model-training hidden">
+                                    <div class="training-spinner">
+                                        <div class="spinner-ring" style="width:32px;height:32px;border-width:3px;"></div>
+                                        <span>Training model... This may take a moment.</span>
+                                    </div>
+                                </div>
+                                <div id="linearResult" class="model-result hidden"></div>
+                            </div>
+                        </div>
+
+                        <!-- LSTM Card -->
+                        <div class="model-card card fade-in fade-in-delay-1" id="lstmCard">
+                            <div class="model-card-header">
+                                <div class="model-icon" style="background:rgba(124,58,237,0.1);color:#7c3aed;">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <div>
+                                    <h3>LSTM</h3>
+                                    <p class="model-subtitle">TensorFlow / Keras • Deep Learning</p>
+                                </div>
+                                <span class="model-badge badge badge-info" id="lstmStatusBadge">Not Trained</span>
+                            </div>
+                            <div class="model-card-body" id="lstmBody">
+                                <div class="model-actions">
+                                    <button class="btn btn-primary btn-sm" id="lstmTrainBtn" onclick="trainModel('lstm')">
+                                        <i class="fas fa-graduation-cap"></i> Train
+                                    </button>
+                                    <button class="btn btn-outline btn-sm" id="lstmPredictBtn" onclick="predictModel('lstm')" disabled>
+                                        <i class="fas fa-crystal-ball"></i> Predict
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm" id="lstmRetrainBtn" onclick="retrainModel('lstm')">
+                                        <i class="fas fa-redo"></i> Retrain
+                                    </button>
+                                </div>
+                                <div id="lstmTraining" class="model-training hidden">
+                                    <div class="training-spinner">
+                                        <div class="spinner-ring" style="width:32px;height:32px;border-width:3px;"></div>
+                                        <span>Training LSTM model... This may take a while.</span>
+                                    </div>
+                                </div>
+                                <div id="lstmResult" class="model-result hidden"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- History Chart Section -->
+                    <div class="card mt-6 fade-in fade-in-delay-2">
+                        <div class="card-header">
+                            <h3><i class="fas fa-clock-rotate"></i> Training History & Performance</h3>
+                        </div>
+                        <div class="card-body" id="predHistoryBody">
+                            <p class="text-muted" style="text-align:center;padding:24px;">
+                                <i class="fas fa-chart-line" style="font-size:2rem;display:block;margin-bottom:12px;"></i>
+                                Train a model to see performance metrics
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div id="predEmpty" class="mt-6">
+                    <div class="card" style="text-align:center;padding:60px 24px;">
+                        <i class="fas fa-brain" style="font-size:3rem;color:var(--color-text-muted);display:block;margin-bottom:16px;"></i>
+                        <h3 style="margin-bottom:8px;">AI Predictions</h3>
+                        <p style="color:var(--color-text-muted);max-width:480px;margin:0 auto;line-height:1.7;">
+                            Enter a stock symbol above to train machine learning models and generate price predictions.
+                            Linear Regression trains quickly; LSTM requires more data and time.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/prediction.js"></script>
+</body>
+</html>

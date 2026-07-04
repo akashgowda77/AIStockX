@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - AIStockX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/global.css">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar Overlay (mobile) -->
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-icon">AI</div>
+                <div class="brand-text">AIStock<span>X</span></div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">Main</div>
+                <a href="dashboard.html" class="nav-item active" data-page="dashboard">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="stock.html" class="nav-item" data-page="stock">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Stock Analysis</span>
+                </a>
+                <a href="prediction.html" class="nav-item" data-page="prediction">
+                    <i class="fas fa-brain"></i>
+                    <span>AI Predictions</span>
+                </a>
+                <a href="comparison.html" class="nav-item" data-page="comparison">
+                    <i class="fas fa-balance-scale"></i>
+                    <span>Model Comparison</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Navbar -->
+            <header class="navbar">
+                <div class="navbar-left">
+                    <button class="mobile-menu-btn" onclick="toggleSidebar()" title="Toggle sidebar" aria-label="Toggle sidebar">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="page-title">Dashboard</h1>
+                </div>
+                <div class="navbar-right">
+                    <div class="navbar-user"></div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="page-content">
+                <!-- Welcome Section -->
+                <div class="fade-in" id="welcomeSection">
+                    <h2 id="welcomeMessage">Welcome back!</h2>
+                    <p class="section-subtitle">Your AI-powered stock analysis dashboard</p>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="grid grid-4 mt-6 fade-in fade-in-delay-1" id="quickStats">
+                    <div class="stat-card">
+                        <div class="stat-label">Stocks Available</div>
+                        <div class="stat-value">8,000+</div>
+                        <div class="stat-sub">Global markets</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">AI Models</div>
+                        <div class="stat-value">2</div>
+                        <div class="stat-sub">Linear Regression & LSTM</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Technical Indicators</div>
+                        <div class="stat-value">8</div>
+                        <div class="stat-sub">RSI, MACD, BB & more</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Data Source</div>
+                        <div class="stat-value">Alpha Vantage</div>
+                        <div class="stat-sub">Real-time & historical</div>
+                    </div>
+                </div>
+
+                <!-- Search Section -->
+                <div class="card mt-8 fade-in fade-in-delay-2">
+                    <div class="card-body">
+                        <h3 class="section-title">Search Stocks</h3>
+                        <p class="section-subtitle">Enter a stock symbol to analyze (e.g., AAPL, MSFT, TSLA, GOOGL)</p>
+                        <div class="search-box" style="max-width: 100%;">
+                            <i class="fas fa-search search-icon"></i>
+                            <input
+                                type="text"
+                                id="stockSearchInput"
+                                placeholder="Search by stock symbol (e.g., AAPL)"
+                                onkeydown="if(event.key==='Enter') searchStock()"
+                            >
+                        </div>
+                        <button class="btn btn-primary mt-4" onclick="searchStock()">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search Results -->
+                <div id="searchResults" class="mt-6 hidden"></div>
+
+                <!-- Company Info + Quote -->
+                <div id="stockInfo" class="mt-6 hidden">
+                    <div class="grid grid-2">
+                        <div class="card fade-in" id="companyCard">
+                            <div class="card-header">
+                                <h3><i class="fas fa-building"></i> Company Profile</h3>
+                            </div>
+                            <div class="card-body" id="companyInfo">
+                                <p class="text-muted">Search a stock to see company information</p>
+                            </div>
+                        </div>
+                        <div class="card fade-in fade-in-delay-1" id="quoteCard">
+                            <div class="card-header">
+                                <h3><i class="fas fa-dollar-sign"></i> Current Quote</h3>
+                            </div>
+                            <div class="card-body" id="quoteInfo">
+                                <p class="text-muted">Search a stock to see the latest quote</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

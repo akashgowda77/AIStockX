@@ -1,0 +1,189 @@
+/* ==========================================================================
+   AIStockX - Prediction Page Styles
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Search Bar
+   -------------------------------------------------------------------------- */
+
+.pred-search-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.pred-search-bar .search-box {
+    flex: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Intro Section
+   -------------------------------------------------------------------------- */
+
+.pred-intro .card-body h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* --------------------------------------------------------------------------
+   Model Cards
+   -------------------------------------------------------------------------- */
+
+.model-card {
+    overflow: hidden;
+}
+
+.model-card-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px 0;
+}
+
+.model-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.model-subtitle {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    margin-top: 2px;
+}
+
+.model-badge {
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.model-card-body {
+    padding: 16px 24px 20px;
+}
+
+.model-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* Training State */
+.model-training {
+    margin-top: 16px;
+}
+
+.training-spinner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: var(--color-primary-bg);
+    border-radius: var(--radius-md);
+    color: var(--color-primary);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Result Display */
+.model-result {
+    margin-top: 16px;
+}
+
+.prediction-price-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.pred-price-item {
+    text-align: center;
+    padding: 14px 8px;
+    background: var(--color-bg);
+    border-radius: var(--radius-md);
+}
+
+.pred-price-item .price-label {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.pred-price-item .price-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.pred-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.pred-metric-item {
+    padding: 10px;
+    background: var(--color-bg);
+    border-radius: var(--radius-sm);
+    text-align: center;
+}
+
+.pred-metric-item .metric-label {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    font-weight: 600;
+}
+
+.pred-metric-item .metric-value {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-top: 2px;
+    color: var(--color-text-primary);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 992px) {
+    .prediction-price-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .pred-metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .pred-search-bar {
+        flex-direction: column;
+    }
+
+    .prediction-price-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .pred-metrics-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .model-actions {
+        flex-direction: column;
+    }
+
+    .model-actions .btn {
+        width: 100%;
+    }
+}

@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Comparison - AIStockX</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/comparison.css">
+</head>
+
+<body>
+
+<div class="app-layout">
+
+    <!-- Mobile Overlay -->
+    <div class="sidebar-overlay"
+         id="sidebarOverlay"
+         onclick="closeSidebar()">
+    </div>
+
+    <!-- ================= Sidebar ================= -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="sidebar-brand">
+            <div class="brand-icon">
+                AI
+            </div>
+
+            <div class="brand-text">
+                AIStock<span>X</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <div class="nav-section">
+                Main
+            </div>
+
+            <a href="dashboard.html" class="nav-item">
+                <i class="fas fa-th-large"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="stock.html" class="nav-item">
+                <i class="fas fa-chart-line"></i>
+                <span>Stock Analysis</span>
+            </a>
+
+            <a href="prediction.html" class="nav-item">
+                <i class="fas fa-brain"></i>
+                <span>AI Predictions</span>
+            </a>
+
+            <a href="comparison.html"
+               class="nav-item active">
+
+                <i class="fas fa-scale-balanced"></i>
+
+                <span>Model Comparison</span>
+
+            </a>
+
+        </nav>
+
+    </aside>
+
+    <!-- ================= Main ================= -->
+
+    <main class="main-content">
+
+        <!-- Navbar -->
+
+        <header class="navbar">
+
+            <div class="navbar-left">
+
+                <button
+                    class="mobile-menu-btn"
+                    onclick="toggleSidebar()"
+                    title="Toggle sidebar"
+                    aria-label="Toggle sidebar">
+
+                    <i class="fas fa-bars"></i>
+
+                </button>
+
+                <h1 class="page-title">
+
+                    AI Model Comparison
+
+                </h1>
+
+            </div>
+
+        </header>
+
+        <!-- ================= Page ================= -->
+
+        <div class="page-content">
+
+            <!-- Search Card -->
+
+            <div class="card fade-in">
+
+                <div class="card-body">
+
+                    <h2 class="section-title">
+
+                        Compare Prediction Models
+
+                    </h2>
+
+                    <p class="section-subtitle">
+
+                        Compare Linear Regression and LSTM using
+                        AI-powered evaluation metrics.
+
+                    </p>
+
+                    <div class="search-box mt-5">
+
+                        <i class="fas fa-search search-icon"></i>
+
+                        <input
+
+                            id="compSymbolInput"
+
+                            type="text"
+
+                            placeholder="Enter Stock Symbol (AAPL, TSLA, MSFT...)"
+
+                            onkeydown="if(event.key==='Enter') loadComparison()"
+
+                        >
+
+                    </div>
+
+                    <button
+
+                        class="btn btn-primary mt-4"
+
+                        onclick="loadComparison()">
+
+                        <i class="fas fa-robot"></i>
+
+                        Compare Models
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            <!-- Loading -->
+
+            <div id="compLoading" class="hidden">
+
+                <div class="card mt-6">
+
+                    <div class="card-body text-center">
+
+                        <i class="fas fa-spinner fa-spin fa-3x"></i>
+
+                        <h3 class="mt-4">
+
+                            Comparing Models...
+
+                        </h3>
+
+                        <p>
+
+                            Running AI evaluation...
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Error -->
+
+            <div id="compError" class="hidden">
+
+                <div class="card mt-6">
+
+                    <div class="card-body text-center">
+
+                        <i class="fas fa-circle-exclamation fa-3x"></i>
+
+                        <h3 class="mt-4">
+
+                            Unable to Compare Models
+
+                        </h3>
+
+                        <p id="compErrorMessage"></p>
+
+                        <button
+
+                            class="btn btn-primary mt-4"
+
+                            onclick="loadComparison()">
+
+                            Retry
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Empty -->
+
+            <div id="compEmpty">
+
+                <div class="card mt-6">
+
+                    <div class="card-body text-center">
+
+                        <i class="fas fa-scale-balanced fa-4x"></i>
+
+                        <h2 class="mt-4">
+
+                            AI Model Comparison
+
+                        </h2>
+
+                        <p>
+
+                            Search any stock symbol to compare
+                            Linear Regression and LSTM models.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ================= Content ================= -->
+
+            <div id="compContent" class="hidden">
+
+                <!-- Recommendation Hero -->
+
+                <div id="recommendedBanner"
+                     class="card mt-6">
+
+                    <!-- Filled by JS -->
+
+                </div>
+
+                                <!-- ========================= -->
+                <!-- Leaderboard + AI Scores -->
+                <!-- ========================= -->
+
+                <div class="grid grid-2 mt-6">
+
+                    <!-- Leaderboard -->
+
+                    <div class="card fade-in">
+
+                        <div class="card-header">
+
+                            <h3>
+
+                                <i class="fas fa-trophy text-warning"></i>
+
+                                AI Leaderboard
+
+                            </h3>
+
+                            <p class="section-subtitle">
+
+                                Ranking based on overall AI score
+
+                            </p>
+
+                        </div>
+
+                        <div
+                            class="card-body"
+                            id="leaderboardBody">
+
+                        </div>
+
+                    </div>
+
+                    <!-- AI Scores -->
+
+                    <div class="card fade-in">
+
+                        <div class="card-header">
+
+                            <h3>
+
+                                <i class="fas fa-star text-primary"></i>
+
+                                AI Scores
+
+                            </h3>
+
+                            <p class="section-subtitle">
+
+                                Overall model performance
+
+                            </p>
+
+                        </div>
+
+                        <div
+                            class="card-body"
+                            id="scoresBody">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ========================= -->
+                <!-- Metric Winners -->
+                <!-- ========================= -->
+
+                <div class="card mt-6 fade-in">
+
+                    <div class="card-header">
+
+                        <h3>
+
+                            <i class="fas fa-award text-success"></i>
+
+                            Metric Winners
+
+                        </h3>
+
+                        <p class="section-subtitle">
+
+                            Best performing model for each evaluation metric
+
+                        </p>
+
+                    </div>
+
+                    <div
+                        class="card-body"
+                        id="metricWinnersBody">
+
+                    </div>
+
+                </div>
+
+
+                <!-- ========================= -->
+                <!-- Charts -->
+                <!-- ========================= -->
+
+                <div class="grid grid-2 mt-6">
+
+                    <!-- Radar -->
+
+                    <div class="card">
+
+                        <div class="card-header">
+
+                            <h3>
+
+                                <i class="fas fa-chart-radar"></i>
+
+                                Performance Radar
+
+                            </h3>
+
+                        </div>
+
+                        <div class="card-body">
+
+                            <canvas
+                                id="radarChart"
+                                height="300">
+
+                            </canvas>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Metrics Chart -->
+
+                    <div class="card">
+
+                        <div class="card-header">
+
+                            <h3>
+
+                                <i class="fas fa-chart-column"></i>
+
+                                Error Metrics
+
+                            </h3>
+
+                        </div>
+
+                        <div class="card-body">
+
+                            <canvas
+                                id="barChart"
+                                height="300">
+
+                            </canvas>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ========================= -->
+                <!-- Prediction Cards -->
+                <!-- ========================= -->
+
+                <div class="card mt-6 fade-in">
+
+                    <div class="card-header">
+
+                        <h3>
+
+                            <i class="fas fa-bullseye"></i>
+
+                            Prediction Comparison
+
+                        </h3>
+
+                        <p class="section-subtitle">
+
+                            Compare predictions from all trained models
+
+                        </p>
+
+                    </div>
+
+                    <div
+                        class="card-body"
+                        id="predictionCompareBody">
+
+                    </div>
+
+                </div>
+
+                                <!-- ========================= -->
+                <!-- Detailed Metrics -->
+                <!-- ========================= -->
+
+                <div class="card mt-6 fade-in">
+
+                    <div class="card-header">
+
+                        <h3>
+
+                            <i class="fas fa-table"></i>
+
+                            Detailed Metrics Comparison
+
+                        </h3>
+
+                        <p class="section-subtitle">
+
+                            Side-by-side evaluation of all model performance metrics
+
+                        </p>
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <div
+                            id="metricsTableBody"
+                            class="table-responsive">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ========================= -->
+                <!-- Strengths & Metadata -->
+                <!-- ========================= -->
+
+                <div class="grid grid-2 mt-6">
+
+                    <!-- Strengths -->
+
+                    <div class="card">
+
+                        <div class="card-header">
+
+                            <h3>
+
+                                <i class="fas fa-thumbs-up text-success"></i>
+
+                                Strengths & Weaknesses
+
+                            </h3>
+
+                            <p class="section-subtitle">
+
+                                AI-generated insights for every model
+
+                            </p>
+
+                        </div>
+
+                        <div
+                            class="card-body"
+                            id="strengthsWeaknessesBody">
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Metadata -->
+
+                    <div class="card">
+
+                        <div class="card-header">
+
+                            <h3>
+
+                                <i class="fas fa-circle-info text-primary"></i>
+
+                                Model Metadata
+
+                            </h3>
+
+                            <p class="section-subtitle">
+
+                                Training information and model details
+
+                            </p>
+
+                        </div>
+
+                        <div
+                            class="card-body"
+                            id="metadataBody">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ========================= -->
+                <!-- AI Score Breakdown -->
+                <!-- ========================= -->
+
+                <div class="card mt-6">
+
+                    <div class="card-header">
+
+                        <h3>
+
+                            <i class="fas fa-calculator"></i>
+
+                            AI Score Breakdown
+
+                        </h3>
+
+                        <p class="section-subtitle">
+
+                            Contribution of each metric to the final AI Score
+
+                        </p>
+
+                    </div>
+
+                    <div
+                        class="card-body"
+                        id="scoreBreakdownBody">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<!-- ===================================== -->
+<!-- Scripts -->
+<!-- ===================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+<script src="js/utils.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/app.js"></script>
+<script src="js/charts.js"></script>
+
+<!-- IMPORTANT -->
+<script src="js/comparison.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    if (typeof initAuthenticatedPage === "function") {
+        initAuthenticatedPage("comparison");
+    }
+
+    if (typeof initComparisonPage === "function") {
+        initComparisonPage();
+    }
+
+});
+</script>
+
+</body>
+</html>

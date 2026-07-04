@@ -1,0 +1,373 @@
+/* ==========================================================================
+   AIStockX - Stock Detail Page Styles
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Stock Search Bar
+   -------------------------------------------------------------------------- */
+
+.stock-search-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.stock-search-bar .search-box {
+    flex: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Stock Header
+   -------------------------------------------------------------------------- */
+
+.stock-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    background: var(--color-bg-card);
+    border-radius: var(--radius-lg);
+    padding: 24px 32px;
+    box-shadow: var(--shadow-card);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.stock-header .stock-header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.stock-header .stock-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-md);
+    background: var(--color-primary-bg);
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.stock-header .stock-title h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.stock-header .stock-title p {
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+    margin-top: 2px;
+}
+
+.stock-header .stock-header-right {
+    text-align: right;
+}
+
+.stock-header .stock-header-right .stock-price {
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+}
+
+.stock-header .stock-header-right .stock-change {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   Chart Period Selector
+   -------------------------------------------------------------------------- */
+
+.chart-period-selector {
+    display: flex;
+    gap: 4px;
+    background: var(--color-bg);
+    border-radius: var(--radius-sm);
+    padding: 3px;
+}
+
+.period-btn {
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.period-btn:hover {
+    color: var(--color-text-primary);
+}
+
+.period-btn.active {
+    background: var(--color-white);
+    color: var(--color-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+/* --------------------------------------------------------------------------
+   Chart Containers
+   -------------------------------------------------------------------------- */
+
+.chart-container {
+    width: 100%;
+    height: 400px;
+    position: relative;
+}
+
+.chart-container-sm {
+    height: 250px;
+}
+
+/* --------------------------------------------------------------------------
+   Trend Signal
+   -------------------------------------------------------------------------- */
+
+.trend-signal-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    padding: 20px;
+    flex-wrap: wrap;
+}
+
+.trend-signal-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 20px 40px;
+    border-radius: var(--radius-lg);
+    min-width: 180px;
+}
+
+.trend-signal-badge .signal-icon {
+    font-size: 2.5rem;
+}
+
+.trend-signal-badge .signal-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    opacity: 0.8;
+}
+
+.trend-signal-badge .signal-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.trend-signal-badge.signal-bullish {
+    background: var(--color-success-bg);
+    color: var(--color-success);
+}
+
+.trend-signal-badge.signal-bearish {
+    background: var(--color-danger-bg);
+    color: var(--color-danger);
+}
+
+.trend-signal-badge.signal-neutral {
+    background: #f0f0f0;
+    color: #666;
+}
+
+.trend-signal-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.trend-signal-detail-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.trend-signal-detail-item .detail-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.trend-signal-detail-item .detail-dot.bullish {
+    background: var(--color-success);
+}
+
+.trend-signal-detail-item .detail-dot.bearish {
+    background: var(--color-danger);
+}
+
+.trend-signal-detail-item .detail-dot.neutral {
+    background: #9aa0a6;
+}
+
+.confidence-bar-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.confidence-bar {
+    width: 120px;
+    height: 6px;
+    background: var(--color-bg);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.confidence-bar .confidence-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s ease;
+}
+
+.confidence-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+    min-width: 36px;
+}
+
+/* --------------------------------------------------------------------------
+   Indicator Grid
+   -------------------------------------------------------------------------- */
+
+.indicator-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.indicator-item {
+    padding: 16px;
+    background: var(--color-bg);
+    border-radius: var(--radius-md);
+    text-align: center;
+}
+
+.indicator-item .indicator-name {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.indicator-item .indicator-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+.indicator-item .indicator-value.value-bullish {
+    color: var(--color-success);
+}
+
+.indicator-item .indicator-value.value-bearish {
+    color: var(--color-danger);
+}
+
+.indicator-item .indicator-value.value-neutral {
+    color: var(--color-text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Indicator Charts
+   -------------------------------------------------------------------------- */
+
+.indicator-charts {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+}
+
+.indicator-chart-item {
+    background: var(--color-bg);
+    border-radius: var(--radius-md);
+    padding: 16px;
+}
+
+.indicator-chart-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--color-text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 992px) {
+    .indicator-charts {
+        grid-template-columns: 1fr;
+    }
+
+    .chart-container {
+        height: 300px;
+    }
+
+    .stock-header {
+        padding: 20px;
+    }
+
+    .stock-header .stock-header-left {
+        gap: 14px;
+    }
+
+    .stock-header .stock-title h1 {
+        font-size: 1.4rem;
+    }
+
+    .stock-header .stock-header-right .stock-price {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .stock-search-bar {
+        flex-direction: column;
+    }
+
+    .stock-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .stock-header .stock-header-right {
+        text-align: center;
+    }
+
+    .trend-signal-container {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .chart-period-selector {
+        flex-wrap: wrap;
+    }
+
+    .chart-container {
+        height: 250px;
+    }
+
+    .indicator-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
