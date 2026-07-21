@@ -26,6 +26,7 @@ _COMPANY_NAME_MAP = {
     "apple": "AAPL",
     "microsoft": "MSFT",
     "tesla": "TSLA",
+    "infosys": "INFY",
     "amazon": "AMZN",
     "alphabet": "GOOGL",
     "google": "GOOGL",
@@ -294,13 +295,6 @@ def get_company_info(symbol: str) -> Dict[str, Any]:
             "currency": data.get("currency") or "USD",
             "exchange": data.get("exchange"),
             "market_cap": _safe_int(data.get("marketCapitalization")),
-            "description": None,  # Finnhub doesn't provide description in profile2
-            "pe_ratio": None,  # Not available in profile2
-            "eps": None,  # Not available in profile2
-            "dividend_yield": None,  # Not available in profile2
-            "book_value": None,  # Not available in profile2
-            "52_week_high": None,  # Not available in profile2
-            "52_week_low": None,  # Not available in profile2
         }
         
     except ValueError:
