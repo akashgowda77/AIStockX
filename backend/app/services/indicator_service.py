@@ -87,7 +87,7 @@ def relative_strength_index(df: pd.DataFrame, window: int = 14) -> pd.Series:
 
     avg_gain = gain.ewm(alpha=1/window, adjust=False).mean()
     avg_loss = loss.ewm(alpha=1/window, adjust=False).mean()
-
+    #replace(0, np.nan): Prevents divide-by-zero errors when there are no losses.
     rs = avg_gain / avg_loss.replace(0, np.nan)
     rsi = 100 - (100 / (1 + rs))
     return rsi
