@@ -65,18 +65,26 @@ async function fetchSymbolQuote(symbol) {
     previewContainer.innerHTML = '<div class="text-muted"><i class="fas fa-spinner fa-spin"></i> Fetching quote for ' + symbol + '...</div>';
 
     try {
-        const quote = await stockApi.getQuote(symbol);
+        const response = await (window.stocksApi || window.stockApi).getQuote(symbol);
+        const quote = (response && response.data) ? response.data : response;
         selectedSymbolQuote = quote;
-        document.getElementById('tradeSymbolInput').value = symbol;
+
+        const symbolInput = document.getElementById('tradeSymbolInput');
+        if (symbolInput) symbolInput.value = symbol;
+
+        const price = quote.price !== undefined ? quote.price : (quote.c || 0);
+        const change = quote.change !== undefined ? quote.change : (quote.d || 0);
+        const pctChange = quote.percent_change !== undefined ? quote.percent_change : (quote.dp || 0);
+        const isPos = change >= 0;
 
         // Fetch AI recommendation if available
         let aiBadgeHtml = '<span class="ai-recommendation-badge badge-ai-hold"><i class="fas fa-robot"></i> AI Signal: HOLD</span>';
         try {
-            const pred = await predictionApi.predictLSTM(symbol);
-            if (pred && pred.prediction) {
-                const currPrice = quote.price || quote.c;
-                const predPrice = pred.prediction.predicted_price;
-                const retPct = ((predPrice - currPrice) / currPrice) * 100;
+            const predRes = await (window.predictionsApi || window.predictionApi).predictLinear(symbol);
+            const predData = (predRes && predRes.data) ? predRes.data : predRes;
+            if (predData && predData.prediction) {
+                const predPrice = predData.prediction.predicted_price;
+                const retPct = price > 0 ? (((predPrice - price) / price) * 100) : 0;
 
                 if (retPct > 2.0) {
                     aiBadgeHtml = `<span class="ai-recommendation-badge badge-ai-buy"><i class="fas fa-arrow-up"></i> AI Signal: BUY (+${retPct.toFixed(1)}%)</span>`;
@@ -87,13 +95,8 @@ async function fetchSymbolQuote(symbol) {
                 }
             }
         } catch {
-            // Keep default badge if LSTM prediction endpoint fails
+            // Default HOLD badge if prediction endpoint fails
         }
-
-        const price = quote.price || quote.c || 0;
-        const change = quote.change || quote.d || 0;
-        const pctChange = quote.percent_change || quote.dp || 0;
-        const isPos = change >= 0;
 
         previewContainer.innerHTML = `
             <div class="quote-preview-header">
@@ -122,7 +125,7 @@ function calculateEstimatedCost() {
     if (!qtyInput || !costDisplay) return;
 
     const qty = parseFloat(qtyInput.value) || 0;
-    const price = selectedSymbolQuote ? (selectedSymbolQuote.price || selectedSymbolQuote.c || 0) : 0;
+    const price = selectedSymbolQuote ? (selectedSymbolQuote.price !== undefined ? selectedSymbolQuote.price : (selectedSymbolQuote.c || 0)) : 0;
     const total = qty * price;
 
     costDisplay.textContent = `$${total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;

@@ -221,3 +221,14 @@ const portfolioApi = {
         return request('/api/portfolio/reset', { method: 'POST', auth: true });
     },
 };
+
+// Expose API wrappers on global window object
+window.authApi = authApi;
+window.stocksApi = stocksApi;
+window.stockApi = stocksApi;
+window.indicatorsApi = indicatorsApi;
+window.predictionsApi = predictionsApi;
+window.predictionApi = predictionsApi;
+window.modelsApi = modelsApi;
+window.healthApi = healthApi;
+window.portfolioApi = portfolioApi;
