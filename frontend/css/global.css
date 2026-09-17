@@ -1086,3 +1086,42 @@ table tr:hover td {
 .fade-in-delay-3 {
     animation-delay: 0.3s;
 }
+
+/* Logout Button Styles */
+.nav-item-logout {
+    width: calc(100% - 24px);
+    background: transparent;
+    border: 1px solid rgba(239, 68, 68, 0.25) !important;
+    color: #f87171 !important;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    margin-top: 16px;
+}
+
+.nav-item-logout:hover {
+    background: rgba(239, 68, 68, 0.15) !important;
+    color: #ef4444 !important;
+    border-color: rgba(239, 68, 68, 0.5) !important;
+}
+
+.btn-navbar-logout {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    border-radius: var(--radius-md);
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-navbar-logout:hover {
+    background: #ef4444;
+    color: white;
+    border-color: #ef4444;
+}

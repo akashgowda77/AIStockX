@@ -183,18 +183,22 @@ function updateNavbarUser(user) {
     const userMenu = document.querySelector('.navbar-user');
     if (!userMenu) return;
 
-    if (user) {
-        userMenu.innerHTML = `
+    const username = user && user.username ? user.username : 'User';
+    const initial = username.charAt(0).toUpperCase();
+    const email = user && user.email ? user.email : '';
+
+    userMenu.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 12px;">
             <div class="user-dropdown">
                 <button class="user-dropdown-trigger" onclick="toggleDropdown(event)">
-                    <div class="user-avatar">${user.username.charAt(0).toUpperCase()}</div>
-                    <span class="user-name">${user.username}</span>
+                    <div class="user-avatar">${initial}</div>
+                    <span class="user-name">${username}</span>
                     <i class="fas fa-chevron-down dropdown-arrow"></i>
                 </button>
                 <div class="dropdown-menu" id="userDropdown">
                     <div class="dropdown-header">
-                        <span class="dropdown-user-name">${user.username}</span>
-                        <span class="dropdown-user-email">${user.email}</span>
+                        <span class="dropdown-user-name">${username}</span>
+                        ${email ? `<span class="dropdown-user-email">${email}</span>` : ''}
                     </div>
                     <div class="dropdown-divider"></div>
                     <a href="dashboard.html" class="dropdown-item">
@@ -206,8 +210,35 @@ function updateNavbarUser(user) {
                     </button>
                 </div>
             </div>
-        `;
-    }
+            <button class="btn-navbar-logout" onclick="handleLogout()" title="Sign Out / Logout">
+                <i class="fas fa-sign-out-alt"></i> <span>Sign Out</span>
+            </button>
+        </div>
+    `;
+
+    setupSidebarLogout();
+}
+
+function setupSidebarLogout() {
+    const sidebarNav = document.querySelector('.sidebar-nav');
+    if (!sidebarNav || sidebarNav.querySelector('.nav-item-logout')) return;
+
+    const accountSection = document.createElement('div');
+    accountSection.className = 'nav-section';
+    accountSection.style.marginTop = '24px';
+    accountSection.textContent = 'Account';
+
+    const logoutBtn = document.createElement('button');
+    logoutBtn.className = 'nav-item nav-item-logout';
+    logoutBtn.onclick = handleLogout;
+    logoutBtn.title = 'Sign Out';
+    logoutBtn.innerHTML = `
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Sign Out</span>
+    `;
+
+    sidebarNav.appendChild(accountSection);
+    sidebarNav.appendChild(logoutBtn);
 }
 
 function toggleDropdown(event) {
