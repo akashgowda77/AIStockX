@@ -9,6 +9,28 @@ let currentTradeAction = 'BUY';
 let selectedSymbolQuote = null;
 let allocationChartInstance = null;
 
+// Self-healing fallback definition for portfolioApi if missing due to stale browser cache
+if (typeof portfolioApi === 'undefined' && typeof request === 'function') {
+    window.portfolioApi = {
+        getSummary() {
+            return request('/api/portfolio', { auth: true });
+        },
+        trade(symbol, action, quantity) {
+            return request('/api/portfolio/trade', {
+                method: 'POST',
+                auth: true,
+                body: { symbol, action, quantity: Number(quantity) }
+            });
+        },
+        getTransactions() {
+            return request('/api/portfolio/transactions', { auth: true });
+        },
+        reset() {
+            return request('/api/portfolio/reset', { method: 'POST', auth: true });
+        },
+    };
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     initAuthenticatedPage('portfolio');
     initPortfolioPage();
