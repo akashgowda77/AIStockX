@@ -71,10 +71,11 @@ async function searchStock() {
             // Store selected stock
             setSelectedStock(stockData);
 
-            // Fetch company info and quote in parallel
+            // Fetch company info, quote, and news sentiment in parallel
             await Promise.all([
                 fetchCompanyInfo(stockData.symbol),
                 fetchQuote(stockData.symbol),
+                fetchDashSentiment(stockData.symbol),
             ]);
 
             stockInfoDiv.classList.remove('hidden');
@@ -243,4 +244,49 @@ async function fetchQuote(symbol) {
 
 function navigateToStock(symbol) {
     window.location.href = `stock.html?symbol=${symbol}`;
+}
+
+async function fetchDashSentiment(symbol) {
+    const card = document.getElementById('dashSentimentCard');
+    const body = document.getElementById('dashSentimentBody');
+    if (!card || !body) return;
+
+    try {
+        const res = await newsApi.getSentiment(symbol, 5);
+        if (res) {
+            const score = res.overall_sentiment_score || 0.0;
+            const label = res.overall_sentiment_label || 'Neutral';
+            const news = res.news || [];
+            const badgeClass = label === 'Bullish' ? 'badge-success' : (label === 'Bearish' ? 'badge-danger' : 'badge-info');
+
+            body.innerHTML = `
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                    <div>
+                        <span style="font-size:0.85rem;color:var(--color-text-muted);">Composite FinBERT Index:</span>
+                        <strong style="font-size:1.2rem;margin-left:8px;color:${score >= 0.15 ? '#10b981' : (score <= -0.15 ? '#ef4444' : '#9ca3af')};">
+                            ${(score >= 0 ? '+' : '') + score.toFixed(2)}
+                        </strong>
+                    </div>
+                    <span class="badge ${badgeClass}">${label} Stance</span>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:10px;">
+                    ${news.slice(0, 3).map(item => `
+                        <div style="padding:10px 14px;background:var(--color-bg);border-radius:var(--radius-md);display:flex;justify-content:space-between;align-items:center;">
+                            <div style="font-size:0.88rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80%;">
+                                <a href="${item.url}" target="_blank" rel="noopener" style="color:var(--color-text-primary);text-decoration:none;">
+                                    ${item.headline}
+                                </a>
+                            </div>
+                            <span class="badge ${item.sentiment_label === 'Bullish' ? 'badge-success' : (item.sentiment_label === 'Bearish' ? 'badge-danger' : 'badge-info')}" style="font-size:0.75rem;">
+                                ${item.sentiment_label}
+                            </span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            card.classList.remove('hidden');
+        }
+    } catch (err) {
+        console.warn("Dashboard sentiment fetch failed:", err);
+    }
 }

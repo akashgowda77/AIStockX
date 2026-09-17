@@ -191,6 +191,48 @@
                     </div>
                 </div>
 
+                <!-- FinBERT Real-Time News Sentiment Section -->
+                <div id="sentimentSection" class="hidden mt-6">
+                    <div class="card fade-in">
+                        <div class="card-header" style="display:flex;align-items:center;justify-content:space-between;">
+                            <h3><i class="fas fa-newspaper" style="color:var(--color-primary-light);"></i> FinBERT Real-Time News Sentiment Analysis</h3>
+                            <span class="badge badge-info" id="sentimentEngineBadge">FinBERT NLP Engine</span>
+                        </div>
+                        <div class="card-body">
+                            <!-- Sentiment Gauge & Summary -->
+                            <div class="sentiment-summary-grid" style="display:grid;grid-template-columns:1fr 2fr;gap:24px;margin-bottom:24px;align-items:center;">
+                                <div class="sentiment-score-box" style="text-align:center;padding:20px;background:var(--color-bg);border-radius:var(--radius-lg);border:1px solid rgba(255,255,255,0.06);">
+                                    <div style="font-size:0.8rem;text-transform:uppercase;letter-spacing:1px;color:var(--color-text-muted);margin-bottom:8px;">Overall Market Stance</div>
+                                    <div id="overallSentimentScore" style="font-size:2.4rem;font-weight:800;line-height:1;margin-bottom:8px;color:var(--color-success);">+0.00</div>
+                                    <div id="overallSentimentBadge" class="badge badge-success" style="font-size:0.9rem;padding:6px 14px;">Bullish</div>
+                                    <div style="font-size:0.75rem;color:var(--color-text-muted);margin-top:12px;">Score range: -1.0 (Bearish) to +1.0 (Bullish)</div>
+                                </div>
+                                <div class="sentiment-breakdown-box">
+                                    <h4 style="margin-bottom:12px;font-size:1rem;color:var(--color-text-primary);">Sentiment Distribution</h4>
+                                    <div class="sentiment-gauge-container" style="margin-bottom:16px;">
+                                        <div class="sentiment-gauge-bar" style="height:12px;background:#374151;border-radius:6px;overflow:hidden;display:flex;">
+                                            <div id="gaugeBullish" style="width:33.3%;background:#10b981;height:100%;transition:width 0.4s;"></div>
+                                            <div id="gaugeNeutral" style="width:33.3%;background:#6b7280;height:100%;transition:width 0.4s;"></div>
+                                            <div id="gaugeBearish" style="width:33.3%;background:#ef4444;height:100%;transition:width 0.4s;"></div>
+                                        </div>
+                                    </div>
+                                    <div style="display:flex;justify-content:space-between;font-size:0.85rem;color:var(--color-text-secondary);">
+                                        <span><i class="fas fa-circle" style="color:#10b981;"></i> Bullish: <strong id="countBullish">0</strong></span>
+                                        <span><i class="fas fa-circle" style="color:#6b7280;"></i> Neutral: <strong id="countNeutral">0</strong></span>
+                                        <span><i class="fas fa-circle" style="color:#ef4444;"></i> Bearish: <strong id="countBearish">0</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="divider"></div>
+
+                            <!-- News Headlines Feed -->
+                            <h4 style="margin-bottom:16px;font-size:1rem;"><i class="fas fa-list-alt"></i> Latest Financial Headlines & FinBERT Scores</h4>
+                            <div id="newsHeadlinesFeed" class="news-headlines-list" style="display:flex;flex-direction:column;gap:12px;"></div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Error State -->
                 <div id="stockError" class="hidden mt-4">
                     <div class="card" style="text-align:center;padding:60px 24px;">

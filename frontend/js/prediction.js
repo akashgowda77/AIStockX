@@ -54,6 +54,29 @@ async function loadPredictionPage() {
     `;
 
     showToast(`Loaded ${symbol}. Click Train to start.`, 'info');
+    updatePredSentiment(symbol);
+}
+
+async function updatePredSentiment(symbol) {
+    try {
+        const sentimentRes = await newsApi.getSentiment(symbol, 5);
+        if (sentimentRes) {
+            const score = sentimentRes.overall_sentiment_score || 0.0;
+            const label = sentimentRes.overall_sentiment_label || 'Neutral';
+            const scoreEl = document.getElementById('predSentimentScoreVal');
+            const badgeEl = document.getElementById('predSentimentBadgeVal');
+            if (scoreEl) {
+                scoreEl.textContent = (score >= 0 ? '+' : '') + score.toFixed(2);
+                scoreEl.style.color = score >= 0.15 ? '#10b981' : (score <= -0.15 ? '#ef4444' : '#9ca3af');
+            }
+            if (badgeEl) {
+                badgeEl.textContent = label;
+                badgeEl.className = `badge ${label === 'Bullish' ? 'badge-success' : (label === 'Bearish' ? 'badge-danger' : 'badge-info')}`;
+            }
+        }
+    } catch (err) {
+        console.warn("Failed to fetch sentiment for predictions page:", err);
+    }
 }
 
 // =============================================================================

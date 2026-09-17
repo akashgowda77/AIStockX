@@ -55,6 +55,7 @@ from .routers.indicators import router as indicators_router
 from .routers.prediction import router as prediction_router
 from .routers.model_evaluation import router as model_evaluation_router
 from .routers.prediction_lstm import router as prediction_lstm_router
+from .routers.news import router as news_router
 
 # Router registration
 
@@ -64,6 +65,7 @@ app.include_router(indicators_router)
 app.include_router(prediction_router, prefix="/api")
 app.include_router(model_evaluation_router)
 app.include_router(prediction_lstm_router)
+app.include_router(news_router, prefix="/api/v1")
 
 
 

@@ -31,6 +31,7 @@ from ..ml.linear_regression_model import LinearRegressionModel
 from ..ml.lstm_model import LSTMModel
 from ..services.stock_service import validate_symbol
 from ..services.model_comparison_service import ModelComparisonService
+from ..services.sentiment_service import SentimentService
 
 
 def _ok(data: Any, message: str) -> Dict[str, Any]:
@@ -50,6 +51,13 @@ class PredictionEngine:
         symbol_normalized = validate_symbol(symbol)
 
         normalized = model_name.strip().lower() if model_name else "linear"
+
+        # Fetch real-time FinBERT news sentiment to attach to prediction payload
+        sentiment_info = None
+        try:
+            sentiment_info = SentimentService.get_stock_news_sentiment(symbol_normalized, count=5)
+        except Exception:
+            pass
 
         if normalized == "linear":
             model = LinearRegressionModel(symbol=symbol_normalized)
@@ -72,6 +80,7 @@ class PredictionEngine:
                         "confidence_score": prediction.confidence_score,
                     },
                     "metrics": prediction.metrics,
+                    "sentiment_analysis": sentiment_info
                 },
                 message="Prediction generated",
             )
@@ -99,6 +108,7 @@ class PredictionEngine:
                         "confidence_score": prediction.confidence_score,
                     },
                     "metrics": prediction.metrics,
+                    "sentiment_analysis": sentiment_info
                 },
                 message="Prediction generated",
             )

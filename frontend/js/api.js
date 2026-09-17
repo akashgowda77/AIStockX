@@ -195,3 +195,15 @@ const healthApi = {
         return request('/health');
     },
 };
+
+// =============================================================================
+// News & FinBERT Sentiment API
+// =============================================================================
+
+const newsApi = {
+    getSentiment(symbol, count = 10) {
+        return request(`/api/v1/news/${symbol}/sentiment`, {
+            params: { count }
+        });
+    },
+};

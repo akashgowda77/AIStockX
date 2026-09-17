@@ -170,6 +170,29 @@
                         </div>
                     </div>
 
+                    <!-- FinBERT Sentiment Impact Card -->
+                    <div class="card mt-6 fade-in fade-in-delay-2" id="finbertPredictionCard">
+                        <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+                            <h3><i class="fas fa-newspaper" style="color:var(--color-primary-light);"></i> FinBERT Real-Time Sentiment Feature Integration</h3>
+                            <span class="badge badge-info" id="predSentimentEngineBadge">FinBERT NLP</span>
+                        </div>
+                        <div class="card-body" id="predSentimentBody">
+                            <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap;">
+                                <div style="flex:1;min-width:280px;">
+                                    <h4 style="margin-bottom:8px;font-size:1rem;color:var(--color-text-primary);">News Sentiment Signal Multiplier</h4>
+                                    <p style="font-size:0.85rem;color:var(--color-text-secondary);line-height:1.6;">
+                                        Stock price predictions incorporate real-time FinBERT sentiment scores (&minus;1.0 Bearish to +1.0 Bullish) alongside technical price data. During earnings releases or news events, sentiment scores guide model forecasts.
+                                    </p>
+                                </div>
+                                <div id="predSentimentGaugeBox" style="text-align:center;padding:16px 24px;background:var(--color-bg);border-radius:var(--radius-lg);border:1px solid rgba(255,255,255,0.06);min-width:180px;">
+                                    <div style="font-size:0.75rem;text-transform:uppercase;color:var(--color-text-muted);margin-bottom:4px;">Sentiment Score</div>
+                                    <div id="predSentimentScoreVal" style="font-size:1.8rem;font-weight:800;color:#10b981;">+0.00</div>
+                                    <div id="predSentimentBadgeVal" class="badge badge-success" style="font-size:0.8rem;margin-top:4px;">Bullish</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- History Chart Section -->
                     <div class="card mt-6 fade-in fade-in-delay-2">
                         <div class="card-header">
