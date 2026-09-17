@@ -52,6 +52,7 @@ function getPageTitle(pageName) {
         stock: 'Stock Analysis',
         prediction: 'AI Predictions',
         comparison: 'Model Comparison',
+        news: 'Financial News & Sentiment',
     };
     return titles[pageName] || 'AIStockX';
 }

@@ -39,6 +39,10 @@
                     <i class="fas fa-balance-scale"></i>
                     <span>Model Comparison</span>
                 </a>
+                <a href="news.html" class="nav-item" data-page="news">
+                    <i class="fas fa-newspaper"></i>
+                    <span>Financial News</span>
+                </a>
                 <div class="nav-section" style="margin-top: 24px;">Account</div>
                 <button class="nav-item nav-item-logout" onclick="handleLogout()" title="Sign Out">
                     <i class="fas fa-sign-out-alt"></i>
@@ -91,6 +95,22 @@
                         <div class="stat-label">Data Source</div>
                         <div class="stat-value">FinnHub & Alpha Vantage</div>
                         <div class="stat-sub">Real-time & historical</div>
+                    </div>
+                </div>
+
+                <!-- Live Market News & FinBERT Sentiment Feed -->
+                <div class="card mt-6 fade-in fade-in-delay-1" id="homeLiveNewsCard">
+                    <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+                        <h3><i class="fas fa-newspaper" style="color:var(--color-primary-light);"></i> Live Market News & FinBERT Sentiment</h3>
+                        <a href="news.html" class="btn btn-outline btn-sm">
+                            <i class="fas fa-arrow-right"></i> View All Financial News
+                        </a>
+                    </div>
+                    <div class="card-body" id="homeLiveNewsBody">
+                        <div style="text-align:center;padding:20px;">
+                            <div class="spinner-ring" style="width:30px;height:30px;border-width:3px;margin:0 auto 8px;"></div>
+                            <p style="color:var(--color-text-muted);font-size:0.9rem;">Loading live financial news...</p>
+                        </div>
                     </div>
                 </div>
 

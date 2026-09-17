@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial News & FinBERT Sentiment - AIStockX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/global.css">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar Overlay (mobile) -->
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-icon">AI</div>
+                <div class="brand-text">AIStock<span>X</span></div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">Main</div>
+                <a href="dashboard.html" class="nav-item" data-page="dashboard">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="stock.html" class="nav-item" data-page="stock">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Stock Analysis</span>
+                </a>
+                <a href="prediction.html" class="nav-item" data-page="prediction">
+                    <i class="fas fa-brain"></i>
+                    <span>AI Predictions</span>
+                </a>
+                <a href="comparison.html" class="nav-item" data-page="comparison">
+                    <i class="fas fa-balance-scale"></i>
+                    <span>Model Comparison</span>
+                </a>
+                <a href="news.html" class="nav-item active" data-page="news">
+                    <i class="fas fa-newspaper"></i>
+                    <span>Financial News</span>
+                </a>
+                <div class="nav-section" style="margin-top: 24px;">Account</div>
+                <button class="nav-item nav-item-logout" onclick="handleLogout()" title="Sign Out">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sign Out</span>
+                </button>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Navbar -->
+            <header class="navbar">
+                <div class="navbar-left">
+                    <button class="mobile-menu-btn" onclick="toggleSidebar()" title="Toggle sidebar" aria-label="Toggle sidebar">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="page-title">Financial News & FinBERT Sentiment</h1>
+                </div>
+                <div class="navbar-right">
+                    <div class="navbar-user"></div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="page-content">
+                <!-- Header Banner -->
+                <div class="card fade-in mb-6">
+                    <div class="card-body" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;">
+                        <div>
+                            <h2 style="font-size:1.5rem;font-weight:700;margin-bottom:6px;"><i class="fas fa-newspaper" style="color:var(--color-primary-light);"></i> Real-Time Financial News NLP Engine</h2>
+                            <p style="color:var(--color-text-secondary);font-size:0.9rem;max-width:650px;">
+                                Analyze real-time market news headlines scored from <strong>&minus;1.0 (Bearish)</strong> to <strong>+1.0 (Bullish)</strong> using HuggingFace FinBERT natural language processing.
+                            </p>
+                        </div>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;" id="stockChips">
+                            <button class="btn btn-outline btn-sm active-chip" onclick="selectNewsSymbol('AAPL', this)">AAPL</button>
+                            <button class="btn btn-outline btn-sm" onclick="selectNewsSymbol('TSLA', this)">TSLA</button>
+                            <button class="btn btn-outline btn-sm" onclick="selectNewsSymbol('MSFT', this)">MSFT</button>
+                            <button class="btn btn-outline btn-sm" onclick="selectNewsSymbol('NVDA', this)">NVDA</button>
+                            <button class="btn btn-outline btn-sm" onclick="selectNewsSymbol('GOOGL', this)">GOOGL</button>
+                            <button class="btn btn-outline btn-sm" onclick="selectNewsSymbol('INFY', this)">INFY</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Symbol Search Bar -->
+                <div class="card fade-in fade-in-delay-1 mb-6">
+                    <div class="card-body">
+                        <div style="display:flex;gap:12px;align-items:center;">
+                            <div class="form-group" style="flex:1;margin-bottom:0;">
+                                <input type="text" id="newsSymbolInput" placeholder="Enter stock symbol (e.g. AAPL, TSLA, INFY)..." value="AAPL" style="width:100%;" onkeydown="if(event.key==='Enter') loadNewsPage()">
+                            </div>
+                            <button class="btn btn-primary" onclick="loadNewsPage()">
+                                <i class="fas fa-search"></i> Analyze News
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading State -->
+                <div id="newsLoading" class="hidden mt-6" style="text-align:center;padding:40px;">
+                    <div class="spinner-ring" style="width:40px;height:40px;border-width:4px;margin:0 auto 16px;"></div>
+                    <p style="color:var(--color-text-muted);">Fetching news & analyzing FinBERT sentiment...</p>
+                </div>
+
+                <!-- Sentiment Overview Card -->
+                <div id="newsContent" class="fade-in fade-in-delay-2">
+                    <div class="card mb-6">
+                        <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+                            <h3><i class="fas fa-chart-pie" style="color:var(--color-primary);"></i> <span id="newsSymbolHeader">AAPL</span> Sentiment Analysis Summary</h3>
+                            <span class="badge badge-info" id="newsEngineBadge">FinBERT NLP</span>
+                        </div>
+                        <div class="card-body">
+                            <div style="display:grid;grid-template-columns:1fr 2fr;gap:24px;align-items:center;">
+                                <div style="text-align:center;padding:24px;background:var(--color-bg);border-radius:var(--radius-lg);border:1px solid rgba(255,255,255,0.06);">
+                                    <div style="font-size:0.8rem;text-transform:uppercase;letter-spacing:1px;color:var(--color-text-muted);margin-bottom:8px;">Overall Market Stance</div>
+                                    <div id="newsOverallScore" style="font-size:2.8rem;font-weight:800;line-height:1;margin-bottom:10px;color:var(--color-success);">+0.00</div>
+                                    <div id="newsOverallBadge" class="badge badge-success" style="font-size:1rem;padding:8px 18px;">Bullish</div>
+                                    <div style="font-size:0.75rem;color:var(--color-text-muted);margin-top:14px;">Range: -1.0 (Extreme Bearish) to +1.0 (Extreme Bullish)</div>
+                                </div>
+                                <div>
+                                    <h4 style="margin-bottom:12px;font-size:1.05rem;">Sentiment Ratio & Distribution</h4>
+                                    <div class="sentiment-gauge-container" style="margin-bottom:18px;">
+                                        <div style="height:14px;background:#374151;border-radius:7px;overflow:hidden;display:flex;">
+                                            <div id="newsGaugeBullish" style="width:50%;background:#10b981;height:100%;transition:width 0.4s;"></div>
+                                            <div id="newsGaugeNeutral" style="width:30%;background:#6b7280;height:100%;transition:width 0.4s;"></div>
+                                            <div id="newsGaugeBearish" style="width:20%;background:#ef4444;height:100%;transition:width 0.4s;"></div>
+                                        </div>
+                                    </div>
+                                    <div style="display:flex;justify-content:space-between;font-size:0.9rem;">
+                                        <span><i class="fas fa-circle" style="color:#10b981;"></i> Bullish: <strong id="newsCountBullish">0</strong></span>
+                                        <span><i class="fas fa-circle" style="color:#6b7280;"></i> Neutral: <strong id="newsCountNeutral">0</strong></span>
+                                        <span><i class="fas fa-circle" style="color:#ef4444;"></i> Bearish: <strong id="newsCountBearish">0</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- News Headlines List -->
+                    <div class="card">
+                        <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+                            <h3><i class="fas fa-list"></i> Real-Time Financial Headlines & Scores</h3>
+                            <div style="display:flex;gap:6px;">
+                                <button class="btn btn-outline btn-sm filter-btn active" onclick="filterNews('all', this)">All</button>
+                                <button class="btn btn-outline btn-sm filter-btn" onclick="filterNews('Bullish', this)">Bullish</button>
+                                <button class="btn btn-outline btn-sm filter-btn" onclick="filterNews('Bearish', this)">Bearish</button>
+                                <button class="btn btn-outline btn-sm filter-btn" onclick="filterNews('Neutral', this)">Neutral</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="newsFeedList" style="display:flex;flex-direction:column;gap:14px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/news.js"></script>
+</body>
+</html>
