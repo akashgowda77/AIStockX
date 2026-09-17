@@ -34,6 +34,10 @@ class PortfolioSummaryResponse(BaseModel):
     total_portfolio_value: float
     total_profit_loss: float
     total_profit_loss_pct: float
+    unrealized_pnl: float = 0.0
+    unrealized_pnl_pct: float = 0.0
+    today_pnl: float = 0.0
+    today_pnl_pct: float = 0.0
     initial_balance: float = 10000.0
     holdings: List[HoldingResponse] = []
 

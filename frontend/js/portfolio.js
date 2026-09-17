@@ -208,15 +208,40 @@ function renderStatCards(summary) {
     const cashBal = document.getElementById('valCashBalance');
     const holdingsVal = document.getElementById('valHoldingsValue');
     const totalPnl = document.getElementById('valTotalPnl');
+    const pnlSub = document.getElementById('valTotalPnlSub');
 
     if (netWorth) netWorth.textContent = `$${summary.total_portfolio_value.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
     if (cashBal) cashBal.textContent = `$${summary.cash_balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
     if (holdingsVal) holdingsVal.textContent = `$${summary.total_stock_value.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
 
     if (totalPnl) {
-        const isPos = summary.total_profit_loss >= 0;
+        let displayPnl = summary.total_profit_loss;
+        let displayPct = summary.total_profit_loss_pct;
+
+        // If total portfolio PnL is 0.00 but user has active holdings with today's market gain/loss:
+        if (displayPnl === 0 && summary.today_pnl && summary.today_pnl !== 0) {
+            displayPnl = summary.today_pnl;
+            displayPct = summary.today_pnl_pct;
+        } else if (displayPnl === 0 && summary.unrealized_pnl && summary.unrealized_pnl !== 0) {
+            displayPnl = summary.unrealized_pnl;
+            displayPct = summary.unrealized_pnl_pct;
+        }
+
+        const isPos = displayPnl >= 0;
         totalPnl.className = `stat-card-val ${isPos ? 'stat-pnl-positive' : 'stat-pnl-negative'}`;
-        totalPnl.textContent = `${isPos ? '+' : ''}$${summary.total_profit_loss.toLocaleString('en-US', { minimumFractionDigits: 2 })} (${isPos ? '+' : ''}${summary.total_profit_loss_pct.toFixed(2)}%)`;
+        totalPnl.textContent = `${isPos ? '+' : ''}$${Math.abs(displayPnl).toLocaleString('en-US', { minimumFractionDigits: 2 })} (${isPos ? '+' : ''}${displayPct.toFixed(2)}%)`;
+
+        if (pnlSub) {
+            if (summary.today_pnl && summary.today_pnl !== 0) {
+                const todayPos = summary.today_pnl >= 0;
+                pnlSub.innerHTML = `Today's Market Gain: <span style="font-weight: 700; color: ${todayPos ? '#10b981' : '#ef4444'};">${todayPos ? '+' : ''}$${summary.today_pnl.toFixed(2)}</span>`;
+            } else if (summary.unrealized_pnl && summary.unrealized_pnl !== 0) {
+                const unPos = summary.unrealized_pnl >= 0;
+                pnlSub.innerHTML = `Unrealized P&L: <span style="font-weight: 700; color: ${unPos ? '#10b981' : '#ef4444'};">${unPos ? '+' : ''}$${summary.unrealized_pnl.toFixed(2)}</span>`;
+            } else {
+                pnlSub.textContent = `Baseline: $10,000.00`;
+            }
+        }
     }
 }
 

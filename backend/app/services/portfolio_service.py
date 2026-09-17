@@ -135,6 +135,8 @@ def get_portfolio_summary(db: Session, user_id: int) -> Dict[str, Any]:
     holdings_list = []
     total_stock_value = 0.0
     total_cost_basis = 0.0
+    total_unrealized_pnl = 0.0
+    total_today_pnl = 0.0
 
     for holding in portfolio.holdings:
         if holding.quantity <= 0:
@@ -142,6 +144,7 @@ def get_portfolio_summary(db: Session, user_id: int) -> Dict[str, Any]:
 
         symbol = holding.symbol
         curr_price = holding.average_buy_price
+        change_per_share = 0.0
         ai_rec = "HOLD"
         predicted_return = 0.0
 
@@ -149,6 +152,7 @@ def get_portfolio_summary(db: Session, user_id: int) -> Dict[str, Any]:
             quote = get_current_price(symbol)
             if quote and quote.get("price"):
                 curr_price = quote["price"]
+                change_per_share = quote.get("change") or 0.0
         except Exception as e:
             logger.warning("Could not fetch current price for %s: %s", symbol, e)
 
@@ -171,9 +175,12 @@ def get_portfolio_summary(db: Session, user_id: int) -> Dict[str, Any]:
         cost_val = holding.quantity * holding.average_buy_price
         profit_loss = current_val - cost_val
         profit_loss_pct = (profit_loss / cost_val * 100) if cost_val > 0 else 0.0
+        holding_today_pnl = holding.quantity * change_per_share
 
         total_stock_value += current_val
         total_cost_basis += cost_val
+        total_unrealized_pnl += profit_loss
+        total_today_pnl += holding_today_pnl
 
         holdings_list.append({
             "id": holding.id,
@@ -191,6 +198,8 @@ def get_portfolio_summary(db: Session, user_id: int) -> Dict[str, Any]:
     total_portfolio_value = portfolio.cash_balance + total_stock_value
     total_profit_loss = total_portfolio_value - INITIAL_WALLET_BALANCE
     total_profit_loss_pct = (total_profit_loss / INITIAL_WALLET_BALANCE) * 100
+    unrealized_pnl_pct = (total_unrealized_pnl / total_cost_basis * 100) if total_cost_basis > 0 else 0.0
+    today_pnl_pct = (total_today_pnl / total_cost_basis * 100) if total_cost_basis > 0 else 0.0
 
     return {
         "cash_balance": round(portfolio.cash_balance, 2),
@@ -198,6 +207,10 @@ def get_portfolio_summary(db: Session, user_id: int) -> Dict[str, Any]:
         "total_portfolio_value": round(total_portfolio_value, 2),
         "total_profit_loss": round(total_profit_loss, 2),
         "total_profit_loss_pct": round(total_profit_loss_pct, 2),
+        "unrealized_pnl": round(total_unrealized_pnl, 2),
+        "unrealized_pnl_pct": round(unrealized_pnl_pct, 2),
+        "today_pnl": round(total_today_pnl, 2),
+        "today_pnl_pct": round(today_pnl_pct, 2),
         "initial_balance": INITIAL_WALLET_BALANCE,
         "holdings": holdings_list,
     }
