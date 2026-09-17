@@ -53,6 +53,10 @@ def register(
     db.commit()
     db.refresh(user)
 
+    # Initialize simulation portfolio account for newly registered user
+    from ..services import portfolio_service
+    portfolio_service.get_or_create_account(db, user.id)
+
     return user
 
 
