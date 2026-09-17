@@ -3,6 +3,7 @@ from sqlalchemy import DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..database import Base
+from .user import User  # noqa: F401
 
 
 class SimulationAccount(Base):

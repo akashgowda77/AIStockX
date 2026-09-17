@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Any
 from pydantic import BaseModel, Field
 
 
@@ -21,6 +21,12 @@ class SimulatedPositionResponse(BaseModel):
     total_market_value: float
     unrealized_pnl: float
     unrealized_pnl_pct: float
+    # Alias fields for frontend JS compatibility
+    total_value: Optional[float] = None
+    profit_loss: Optional[float] = None
+    profit_loss_pct: Optional[float] = None
+    ai_recommendation: Optional[str] = "HOLD"
+    ai_predicted_return_pct: Optional[float] = 0.0
 
     class Config:
         from_attributes = True
@@ -35,7 +41,12 @@ class SimulatedOrderResponse(BaseModel):
     execution_price: float
     total_value: float
     status: str
-    created_at: datetime
+    created_at: Any
+    # Alias fields for frontend JS compatibility
+    transaction_type: Optional[str] = None
+    price_per_share: Optional[float] = None
+    total_amount: Optional[float] = None
+    timestamp: Optional[Any] = None
 
     class Config:
         from_attributes = True
@@ -54,3 +65,11 @@ class PortfolioSummaryResponse(BaseModel):
     total_return_percentage: float
     positions: List[SimulatedPositionResponse] = []
     recent_orders: List[SimulatedOrderResponse] = []
+    # Alias fields for frontend JS compatibility
+    total_portfolio_value: Optional[float] = None
+    total_profit_loss_pct: Optional[float] = None
+    holdings: List[SimulatedPositionResponse] = []
+    today_pnl: Optional[float] = 0.0
+    today_pnl_pct: Optional[float] = 0.0
+    unrealized_pnl: Optional[float] = 0.0
+    unrealized_pnl_pct: Optional[float] = 0.0

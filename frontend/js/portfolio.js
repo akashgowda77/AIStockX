@@ -19,7 +19,7 @@ if (typeof portfolioApi === 'undefined' && typeof request === 'function') {
             return request('/api/portfolio/trade', {
                 method: 'POST',
                 auth: true,
-                body: { symbol, action, quantity: Number(quantity) }
+                body: { symbol, side: action, action, quantity: Number(quantity) }
             });
         },
         getTransactions() {
@@ -87,33 +87,37 @@ async function fetchSymbolQuote(symbol) {
     previewContainer.innerHTML = '<div class="text-muted"><i class="fas fa-spinner fa-spin"></i> Fetching quote for ' + symbol + '...</div>';
 
     try {
-        const response = await (window.stocksApi || window.stockApi).getQuote(symbol);
+        const stocksService = window.stocksApi || window.stockApi;
+        const response = stocksService ? await stocksService.getQuote(symbol) : null;
         const quote = (response && response.data) ? response.data : response;
         selectedSymbolQuote = quote;
 
         const symbolInput = document.getElementById('tradeSymbolInput');
         if (symbolInput) symbolInput.value = symbol;
 
-        const price = quote.price !== undefined ? quote.price : (quote.c || 0);
-        const change = quote.change !== undefined ? quote.change : (quote.d || 0);
-        const pctChange = quote.percent_change !== undefined ? quote.percent_change : (quote.dp || 0);
+        const price = quote && quote.price !== undefined ? quote.price : (quote && quote.c !== undefined ? quote.c : 0);
+        const change = quote && quote.change !== undefined ? quote.change : (quote && quote.d !== undefined ? quote.d : 0);
+        const pctChange = quote && quote.percent_change !== undefined ? quote.percent_change : (quote && quote.dp !== undefined ? quote.dp : 0);
         const isPos = change >= 0;
 
         // Fetch AI recommendation if available
         let aiBadgeHtml = '<span class="ai-recommendation-badge badge-ai-hold"><i class="fas fa-robot"></i> AI Signal: HOLD</span>';
         try {
-            const predRes = await (window.predictionsApi || window.predictionApi).predictLinear(symbol);
-            const predData = (predRes && predRes.data) ? predRes.data : predRes;
-            if (predData && predData.prediction) {
-                const predPrice = predData.prediction.predicted_price;
-                const retPct = price > 0 ? (((predPrice - price) / price) * 100) : 0;
+            const predService = window.predictionsApi || window.predictionApi;
+            if (predService && predService.predictLinear) {
+                const predRes = await predService.predictLinear(symbol);
+                const predData = (predRes && predRes.data) ? predRes.data : predRes;
+                if (predData && predData.prediction) {
+                    const predPrice = predData.prediction.predicted_price;
+                    const retPct = price > 0 ? (((predPrice - price) / price) * 100) : 0;
 
-                if (retPct > 2.0) {
-                    aiBadgeHtml = `<span class="ai-recommendation-badge badge-ai-buy"><i class="fas fa-arrow-up"></i> AI Signal: BUY (+${retPct.toFixed(1)}%)</span>`;
-                } else if (retPct < -2.0) {
-                    aiBadgeHtml = `<span class="ai-recommendation-badge badge-ai-sell"><i class="fas fa-arrow-down"></i> AI Signal: SELL (${retPct.toFixed(1)}%)</span>`;
-                } else {
-                    aiBadgeHtml = `<span class="ai-recommendation-badge badge-ai-hold"><i class="fas fa-minus"></i> AI Signal: HOLD (${retPct >= 0 ? '+' : ''}${retPct.toFixed(1)}%)</span>`;
+                    if (retPct > 2.0) {
+                        aiBadgeHtml = `<span class="ai-recommendation-badge badge-ai-buy"><i class="fas fa-arrow-up"></i> AI Signal: BUY (+${retPct.toFixed(1)}%)</span>`;
+                    } else if (retPct < -2.0) {
+                        aiBadgeHtml = `<span class="ai-recommendation-badge badge-ai-sell"><i class="fas fa-arrow-down"></i> AI Signal: SELL (${retPct.toFixed(1)}%)</span>`;
+                    } else {
+                        aiBadgeHtml = `<span class="ai-recommendation-badge badge-ai-hold"><i class="fas fa-minus"></i> AI Signal: HOLD (${retPct >= 0 ? '+' : ''}${retPct.toFixed(1)}%)</span>`;
+                    }
                 }
             }
         } catch {
@@ -177,9 +181,9 @@ async function handleTradeSubmit(event) {
 
     try {
         const response = await portfolioApi.trade(symbol, currentTradeAction, qty);
-        showToast(response.message, 'success');
+        showToast(response.message || 'Trade executed successfully!', 'success');
         await refreshPortfolio();
-        if (qtyInput) qtyInput.value = '1';
+        if (qtyInput) qtyInput.value = '10';
         calculateEstimatedCost();
     } catch (err) {
         showToast(err.message || 'Trade execution failed.', 'error');
@@ -192,55 +196,44 @@ async function handleTradeSubmit(event) {
 async function refreshPortfolio() {
     try {
         const summary = await portfolioApi.getSummary();
+        const holdings = summary.positions || summary.holdings || [];
         renderStatCards(summary);
-        renderHoldingsTable(summary.holdings);
+        renderHoldingsTable(holdings);
         renderAllocationChart(summary);
 
         const txList = await portfolioApi.getTransactions();
-        renderTransactionTable(txList);
+        const orders = Array.isArray(txList) ? txList : (txList.recent_orders || []);
+        renderTransactionTable(orders);
     } catch (err) {
         console.error('Failed to load portfolio:', err);
     }
 }
 
 function renderStatCards(summary) {
+    if (!summary) return;
+    const netWorthVal = summary.portfolio_value ?? summary.total_portfolio_value ?? 10000;
+    const cashBalVal = summary.cash_balance ?? 10000;
+    const holdingsVal = summary.total_stock_value ?? 0;
+    const totalPnlVal = summary.total_profit_loss ?? 0;
+    const totalReturnPctVal = summary.total_return_percentage ?? summary.total_profit_loss_pct ?? 0;
+
     const netWorth = document.getElementById('valNetWorth');
     const cashBal = document.getElementById('valCashBalance');
-    const holdingsVal = document.getElementById('valHoldingsValue');
+    const holdingsElem = document.getElementById('valHoldingsValue');
     const totalPnl = document.getElementById('valTotalPnl');
     const pnlSub = document.getElementById('valTotalPnlSub');
 
-    if (netWorth) netWorth.textContent = `$${summary.total_portfolio_value.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
-    if (cashBal) cashBal.textContent = `$${summary.cash_balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
-    if (holdingsVal) holdingsVal.textContent = `$${summary.total_stock_value.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+    if (netWorth) netWorth.textContent = `$${netWorthVal.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+    if (cashBal) cashBal.textContent = `$${cashBalVal.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+    if (holdingsElem) holdingsElem.textContent = `$${holdingsVal.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
 
     if (totalPnl) {
-        let displayPnl = summary.total_profit_loss;
-        let displayPct = summary.total_profit_loss_pct;
-
-        // If total portfolio PnL is 0.00 but user has active holdings with today's market gain/loss:
-        if (displayPnl === 0 && summary.today_pnl && summary.today_pnl !== 0) {
-            displayPnl = summary.today_pnl;
-            displayPct = summary.today_pnl_pct;
-        } else if (displayPnl === 0 && summary.unrealized_pnl && summary.unrealized_pnl !== 0) {
-            displayPnl = summary.unrealized_pnl;
-            displayPct = summary.unrealized_pnl_pct;
-        }
-
-        const isPos = displayPnl >= 0;
+        const isPos = totalPnlVal >= 0;
         totalPnl.className = `stat-card-val ${isPos ? 'stat-pnl-positive' : 'stat-pnl-negative'}`;
-        totalPnl.textContent = `${isPos ? '+' : ''}$${Math.abs(displayPnl).toLocaleString('en-US', { minimumFractionDigits: 2 })} (${isPos ? '+' : ''}${displayPct.toFixed(2)}%)`;
+        totalPnl.textContent = `${isPos ? '+' : ''}$${Math.abs(totalPnlVal).toLocaleString('en-US', { minimumFractionDigits: 2 })} (${isPos ? '+' : ''}${totalReturnPctVal.toFixed(2)}%)`;
 
         if (pnlSub) {
-            if (summary.today_pnl && summary.today_pnl !== 0) {
-                const todayPos = summary.today_pnl >= 0;
-                pnlSub.innerHTML = `Today's Market Gain: <span style="font-weight: 700; color: ${todayPos ? '#10b981' : '#ef4444'};">${todayPos ? '+' : ''}$${summary.today_pnl.toFixed(2)}</span>`;
-            } else if (summary.unrealized_pnl && summary.unrealized_pnl !== 0) {
-                const unPos = summary.unrealized_pnl >= 0;
-                pnlSub.innerHTML = `Unrealized P&L: <span style="font-weight: 700; color: ${unPos ? '#10b981' : '#ef4444'};">${unPos ? '+' : ''}$${summary.unrealized_pnl.toFixed(2)}</span>`;
-            } else {
-                pnlSub.textContent = `Baseline: $10,000.00`;
-            }
+            pnlSub.textContent = `Baseline: $10,000.00`;
         }
     }
 }
@@ -262,23 +255,28 @@ function renderHoldingsTable(holdings) {
     }
 
     tbody.innerHTML = holdings.map(h => {
-        const isPos = h.profit_loss >= 0;
+        const pnl = h.unrealized_pnl ?? h.profit_loss ?? 0;
+        const pnlPct = h.unrealized_pnl_pct ?? h.profit_loss_pct ?? 0;
+        const isPos = pnl >= 0;
+        const currentPrice = h.current_price ?? h.average_buy_price ?? 0;
+        const totalVal = h.total_market_value ?? h.total_value ?? (h.quantity * currentPrice);
+
         let aiBadge = '<span class="ai-recommendation-badge badge-ai-hold">HOLD</span>';
         if (h.ai_recommendation === 'BUY') {
-            aiBadge = `<span class="ai-recommendation-badge badge-ai-buy">BUY (+${h.ai_predicted_return_pct}%)</span>`;
+            aiBadge = `<span class="ai-recommendation-badge badge-ai-buy">BUY (+${h.ai_predicted_return_pct || 0}%)</span>`;
         } else if (h.ai_recommendation === 'SELL') {
-            aiBadge = `<span class="ai-recommendation-badge badge-ai-sell">SELL (${h.ai_predicted_return_pct}%)</span>`;
+            aiBadge = `<span class="ai-recommendation-badge badge-ai-sell">SELL (${h.ai_predicted_return_pct || 0}%)</span>`;
         }
 
         return `
             <tr>
                 <td><strong>${h.symbol}</strong></td>
                 <td>${h.quantity}</td>
-                <td>$${h.average_buy_price.toFixed(2)}</td>
-                <td>$${h.current_price.toFixed(2)}</td>
-                <td>$${h.total_value.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+                <td>$${(h.average_buy_price || 0).toFixed(2)}</td>
+                <td>$${currentPrice.toFixed(2)}</td>
+                <td>$${totalVal.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
                 <td style="font-weight: 600; color: ${isPos ? '#10b981' : '#ef4444'};">
-                    ${isPos ? '+' : ''}$${h.profit_loss.toFixed(2)} (${isPos ? '+' : ''}${h.profit_loss_pct.toFixed(2)}%)
+                    ${isPos ? '+' : ''}$${Math.abs(pnl).toFixed(2)} (${isPos ? '+' : ''}${pnlPct.toFixed(2)}%)
                 </td>
                 <td>${aiBadge}</td>
                 <td>
@@ -299,17 +297,21 @@ function quickTrade(symbol, action) {
 
 function renderAllocationChart(summary) {
     const canvas = document.getElementById('allocationChart');
-    if (!canvas) return;
+    if (!canvas || !summary) return;
+
+    const holdings = summary.positions || summary.holdings || [];
+    const cash = summary.cash_balance ?? 10000;
 
     const labels = ['Cash Balance'];
-    const data = [summary.cash_balance];
+    const data = [cash];
     const colors = ['#10b981'];
 
     const stockColors = ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#06b6d4', '#6366f1'];
 
-    summary.holdings.forEach((h, index) => {
+    holdings.forEach((h, index) => {
+        const val = h.total_market_value ?? h.total_value ?? (h.quantity * (h.current_price || h.average_buy_price || 0));
         labels.push(h.symbol);
-        data.push(h.total_value);
+        data.push(val);
         colors.push(stockColors[index % stockColors.length]);
     });
 
@@ -345,7 +347,9 @@ function renderTransactionTable(transactions) {
     const tbody = document.getElementById('transactionTableBody');
     if (!tbody) return;
 
-    if (!transactions || transactions.length === 0) {
+    const txList = Array.isArray(transactions) ? transactions : [];
+
+    if (txList.length === 0) {
         tbody.innerHTML = `
             <tr>
                 <td colspan="6" style="text-align: center; color: var(--color-text-muted); padding: 24px;">
@@ -356,9 +360,13 @@ function renderTransactionTable(transactions) {
         return;
     }
 
-    tbody.innerHTML = transactions.map(tx => {
-        const isBuy = tx.transaction_type === 'BUY';
-        const dateStr = new Date(tx.timestamp).toLocaleString();
+    tbody.innerHTML = txList.map(tx => {
+        const side = (tx.side || tx.transaction_type || 'BUY').toUpperCase();
+        const isBuy = side === 'BUY';
+        const rawDate = tx.created_at || tx.timestamp;
+        const dateStr = rawDate ? new Date(rawDate).toLocaleString() : 'N/A';
+        const price = tx.execution_price ?? tx.price_per_share ?? 0;
+        const total = tx.total_value ?? tx.total_amount ?? (tx.quantity * price);
 
         return `
             <tr>
@@ -366,12 +374,12 @@ function renderTransactionTable(transactions) {
                 <td><strong>${tx.symbol}</strong></td>
                 <td>
                     <span style="font-weight: 700; color: ${isBuy ? '#10b981' : '#ef4444'};">
-                        <i class="fas ${isBuy ? 'fa-arrow-down' : 'fa-arrow-up'}"></i> ${tx.transaction_type}
+                        <i class="fas ${isBuy ? 'fa-arrow-down' : 'fa-arrow-up'}"></i> ${side}
                     </span>
                 </td>
                 <td>${tx.quantity}</td>
-                <td>$${tx.price_per_share.toFixed(2)}</td>
-                <td><strong>$${tx.total_amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong></td>
+                <td>$${price.toFixed(2)}</td>
+                <td><strong>$${total.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong></td>
             </tr>
         `;
     }).join('');
@@ -384,7 +392,7 @@ async function confirmResetPortfolio() {
 
     try {
         const res = await portfolioApi.reset();
-        showToast(res.message, 'info');
+        showToast(res.message || 'Portfolio reset successfully!', 'info');
         await refreshPortfolio();
     } catch (err) {
         showToast(err.message || 'Reset failed.', 'error');
