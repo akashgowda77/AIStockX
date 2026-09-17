@@ -13,7 +13,22 @@ function initApp() {
         loadUserProfile();
     }
     setupNavbar();
+    setupSidebarLogout();
 }
+
+// Automatically setup navbar & sidebar logout on DOM ready for all pages
+document.addEventListener('DOMContentLoaded', function () {
+    const path = window.location.pathname;
+    const isAuthPage = path.includes('login.html') || path.includes('register.html');
+
+    if (!isAuthPage) {
+        setupNavbar();
+        setupSidebarLogout();
+        if (isAuthenticated()) {
+            loadUserProfile();
+        }
+    }
+});
 
 // =============================================================================
 // Load User Profile
