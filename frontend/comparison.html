@@ -604,6 +604,659 @@
 
                 </div>
 
+                <!-- ========================================================================== -->
+                <!-- Pixel-Perfect Interactive Documentation & Financial Guide -->
+                <!-- ========================================================================== -->
+
+                <style>
+                .guide-doc-wrapper {
+                    background: #ffffff;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 20px;
+                    padding: 32px;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+                    margin-top: 32px;
+                    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+                }
+
+                .guide-header-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    flex-wrap: wrap;
+                    gap: 20px;
+                    padding-bottom: 24px;
+                    border-bottom: 1px solid #f1f5f9;
+                    margin-bottom: 28px;
+                }
+
+                .guide-tag-badge {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    background: #eff6ff;
+                    color: #2563eb;
+                    font-size: 11px;
+                    font-weight: 700;
+                    padding: 5px 12px;
+                    border-radius: 999px;
+                    letter-spacing: 0.6px;
+                    text-transform: uppercase;
+                    margin-bottom: 8px;
+                }
+
+                .guide-title-text {
+                    font-size: 24px;
+                    font-weight: 800;
+                    color: #0f172a;
+                    margin: 0 0 6px 0;
+                    line-height: 1.2;
+                }
+
+                .guide-subtitle-text {
+                    font-size: 14px;
+                    color: #64748b;
+                    margin: 0;
+                }
+
+                /* Nav Segmented Control */
+                .guide-nav-pills {
+                    display: inline-flex;
+                    background: #f1f5f9;
+                    padding: 4px;
+                    border-radius: 12px;
+                    gap: 4px;
+                }
+
+                .guide-pill-btn {
+                    border: none;
+                    background: transparent;
+                    padding: 10px 18px;
+                    font-size: 13px;
+                    font-weight: 600;
+                    color: #64748b;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+
+                .guide-pill-btn:hover {
+                    color: #0f172a;
+                    background: rgba(255, 255, 255, 0.5);
+                }
+
+                .guide-pill-btn.active {
+                    background: #2563eb;
+                    color: #ffffff;
+                    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+                }
+
+                /* Grid Layout */
+                .guide-grid-2col {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+                    gap: 24px;
+                }
+
+                /* Metric Card Component */
+                .doc-card {
+                    background: #f8fafc;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 16px;
+                    padding: 24px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    transition: all 0.25s ease;
+                }
+
+                .doc-card:hover {
+                    background: #ffffff;
+                    border-color: #3b82f6;
+                    box-shadow: 0 12px 28px rgba(37, 99, 235, 0.08);
+                    transform: translateY(-3px);
+                }
+
+                .doc-card-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 12px;
+                }
+
+                .doc-card-title {
+                    font-size: 17px;
+                    font-weight: 700;
+                    color: #0f172a;
+                    margin: 0;
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                }
+
+                .doc-pill {
+                    font-size: 11px;
+                    font-weight: 700;
+                    padding: 4px 10px;
+                    border-radius: 999px;
+                    text-transform: uppercase;
+                }
+
+                .doc-pill-green { background: #dcfce7; color: #15803d; }
+                .doc-pill-orange { background: #ffedd5; color: #c2410c; }
+                .doc-pill-blue { background: #dbeafe; color: #1e40af; }
+                .doc-pill-purple { background: #f3e8ff; color: #7e22ce; }
+
+                .doc-code-banner {
+                    background: #1e293b;
+                    color: #38bdf8;
+                    font-family: 'Consolas', 'Courier New', monospace;
+                    font-size: 12px;
+                    padding: 10px 14px;
+                    border-radius: 8px;
+                    margin: 10px 0 16px 0;
+                    overflow-x: auto;
+                }
+
+                .doc-section-block {
+                    margin-bottom: 14px;
+                }
+
+                .doc-section-label {
+                    font-size: 11px;
+                    font-weight: 700;
+                    color: #94a3b8;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    margin-bottom: 4px;
+                }
+
+                .doc-section-text {
+                    font-size: 13.5px;
+                    line-height: 1.55;
+                    color: #334155;
+                    margin: 0;
+                }
+
+                .doc-callout-amber {
+                    background: #fffbeb;
+                    border-left: 4px solid #f59e0b;
+                    padding: 12px 14px;
+                    border-radius: 8px;
+                    margin-top: 14px;
+                }
+
+                .doc-callout-blue {
+                    background: #eff6ff;
+                    border-left: 4px solid #2563eb;
+                    padding: 12px 14px;
+                    border-radius: 8px;
+                    margin-top: 14px;
+                }
+
+                .doc-callout-text {
+                    font-size: 12.5px;
+                    line-height: 1.5;
+                    color: #1e293b;
+                    margin: 0;
+                }
+
+                /* Tab View Toggling */
+                .guide-tab-pane {
+                    display: none;
+                }
+
+                .guide-tab-pane.active {
+                    display: block;
+                    animation: guidePaneFade 0.3s ease forwards;
+                }
+
+                @keyframes guidePaneFade {
+                    from { opacity: 0; transform: translateY(6px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+
+                /* Cheat Sheet Table */
+                .doc-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    background: #ffffff;
+                    border-radius: 12px;
+                    overflow: hidden;
+                    border: 1px solid #e2e8f0;
+                }
+
+                .doc-table th {
+                    background: #0f172a;
+                    color: #ffffff;
+                    font-size: 12px;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    padding: 14px 16px;
+                    text-align: left;
+                }
+
+                .doc-table td {
+                    padding: 14px 16px;
+                    border-bottom: 1px solid #f1f5f9;
+                    font-size: 13px;
+                    color: #334155;
+                }
+
+                .doc-table tr:hover {
+                    background: #f8fafc;
+                }
+
+                @media (max-width: 768px) {
+                    .guide-header-row {
+                        flex-direction: column;
+                        align-items: flex-start;
+                    }
+                    .guide-nav-pills {
+                        width: 100%;
+                    }
+                    .guide-pill-btn {
+                        flex: 1;
+                        justify-content: center;
+                    }
+                    .guide-grid-2col {
+                        grid-template-columns: 1fr;
+                    }
+                }
+                </style>
+
+                <div class="guide-doc-wrapper">
+                    <!-- Header Row -->
+                    <div class="guide-header-row">
+                        <div>
+                            <div class="guide-tag-badge">
+                                <i class="fas fa-book-bookmark"></i> Documentation & Knowledge Base
+                            </div>
+                            <h2 class="guide-title-text">Understanding AI Metrics & Charts</h2>
+                            <p class="guide-subtitle-text">Master the technical importance of each model evaluation score and visual analysis tool.</p>
+                        </div>
+
+                        <!-- Segmented Tab Controls -->
+                        <div class="guide-nav-pills">
+                            <button class="guide-pill-btn active" onclick="switchDocTab('docMetricsTab', this)">
+                                <i class="fas fa-calculator"></i> Evaluation Metrics
+                            </button>
+                            <button class="guide-pill-btn" onclick="switchDocTab('docChartsTab', this)">
+                                <i class="fas fa-chart-pie"></i> Visual Charts
+                            </button>
+                            <button class="guide-pill-btn" onclick="switchDocTab('docTableTab', this)">
+                                <i class="fas fa-table-list"></i> Quick Cheat-Sheet
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- PANE 1: Evaluation Metrics -->
+                    <div id="docMetricsTab" class="guide-tab-pane active">
+                        <div class="guide-grid-2col">
+
+                            <!-- Metric 1: Prediction Accuracy -->
+                            <div class="doc-card">
+                                <div>
+                                    <div class="doc-card-header">
+                                        <h3 class="doc-card-title">
+                                            <i class="fas fa-bullseye text-primary"></i> Prediction Accuracy
+                                        </h3>
+                                        <span class="doc-pill doc-pill-green">Higher is Better</span>
+                                    </div>
+                                    <div class="doc-code-banner">Accuracy % = max(0, 100 - MAPE)</div>
+                                    <div class="doc-section-block">
+                                        <div class="doc-section-label">What it Measures</div>
+                                        <p class="doc-section-text">The overall percentage closeness of the AI model's closing price forecasts relative to actual market closing prices.</p>
+                                    </div>
+                                </div>
+                                <div class="doc-callout-amber">
+                                    <p class="doc-callout-text">
+                                        <strong>💡 Investor Takeaway:</strong> Provides an instant 0–100% score. A rating of 95%+ means the model's price forecasts were consistently within a 5% error margin.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Metric 2: Direction Accuracy -->
+                            <div class="doc-card">
+                                <div>
+                                    <div class="doc-card-header">
+                                        <h3 class="doc-card-title">
+                                            <i class="fas fa-compass text-purple"></i> Direction Accuracy
+                                        </h3>
+                                        <span class="doc-pill doc-pill-green">Higher is Better</span>
+                                    </div>
+                                    <div class="doc-code-banner">Trend Match % = (Correct Up/Down / Total Days) * 100</div>
+                                    <div class="doc-section-block">
+                                        <div class="doc-section-label">What it Measures</div>
+                                        <p class="doc-section-text">Calculates how frequently the model correctly predicts whether tomorrow's price will move UP (Bullish) or DOWN (Bearish).</p>
+                                    </div>
+                                </div>
+                                <div class="doc-callout-amber">
+                                    <p class="doc-callout-text">
+                                        <strong>💡 Investor Takeaway:</strong> Crucial for trading strategies! Getting the price trend direction right is often far more profitable than predicting exact dollar amounts.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Metric 3: RMSE -->
+                            <div class="doc-card">
+                                <div>
+                                    <div class="doc-card-header">
+                                        <h3 class="doc-card-title">
+                                            <i class="fas fa-chart-line-down text-danger"></i> RMSE (Root Mean Squared Error)
+                                        </h3>
+                                        <span class="doc-pill doc-pill-orange">Lower is Better</span>
+                                    </div>
+                                    <div class="doc-code-banner">RMSE = √( Σ(y_actual - y_pred)² / N )</div>
+                                    <div class="doc-section-block">
+                                        <div class="doc-section-label">What it Measures</div>
+                                        <p class="doc-section-text">Measures standard deviation of residuals, squaring price errors to heavily penalize large, unexpected prediction blunders.</p>
+                                    </div>
+                                </div>
+                                <div class="doc-callout-amber">
+                                    <p class="doc-callout-text">
+                                        <strong>💡 Investor Takeaway:</strong> Acts as an 'outlier detector'. A high RMSE warns you that the model occasionally makes major, unpredictable price mistakes.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Metric 4: MAE -->
+                            <div class="doc-card">
+                                <div>
+                                    <div class="doc-card-header">
+                                        <h3 class="doc-card-title">
+                                            <i class="fas fa-calculator text-warning"></i> MAE (Mean Absolute Error)
+                                        </h3>
+                                        <span class="doc-pill doc-pill-orange">Lower is Better</span>
+                                    </div>
+                                    <div class="doc-code-banner">MAE = (1 / N) * Σ |y_actual - y_pred|</div>
+                                    <div class="doc-section-block">
+                                        <div class="doc-section-label">What it Measures</div>
+                                        <p class="doc-section-text">Calculates the straightforward linear dollar amount the prediction was off by, treating all error sizes equally.</p>
+                                    </div>
+                                </div>
+                                <div class="doc-callout-amber">
+                                    <p class="doc-callout-text">
+                                        <strong>💡 Investor Takeaway:</strong> Real-dollar benchmark. An MAE of $1.50 means predictions are on average off by exactly $1.50 per share.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Metric 5: MAPE -->
+                            <div class="doc-card">
+                                <div>
+                                    <div class="doc-card-header">
+                                        <h3 class="doc-card-title">
+                                            <i class="fas fa-percent text-success"></i> MAPE (Mean Absolute % Error)
+                                        </h3>
+                                        <span class="doc-pill doc-pill-orange">Lower is Better</span>
+                                    </div>
+                                    <div class="doc-code-banner">MAPE = (100% / N) * Σ | (y_actual - y_pred) / y_actual |</div>
+                                    <div class="doc-section-block">
+                                        <div class="doc-section-label">What it Measures</div>
+                                        <p class="doc-section-text">Normalizes dollar error into a percentage relative to the stock's actual price magnitude.</p>
+                                    </div>
+                                </div>
+                                <div class="doc-callout-amber">
+                                    <p class="doc-callout-text">
+                                        <strong>💡 Investor Takeaway:</strong> Scale-invariant metric. Allows fair comparison of prediction accuracy between $10 penny stocks and $1,000 tech stocks.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Metric 6: R² Score -->
+                            <div class="doc-card">
+                                <div>
+                                    <div class="doc-card-header">
+                                        <h3 class="doc-card-title">
+                                            <i class="fas fa-square-root-variable text-info"></i> R² Score (Goodness of Fit)
+                                        </h3>
+                                        <span class="doc-pill doc-pill-blue">Scale: 0.0 to 1.0</span>
+                                    </div>
+                                    <div class="doc-code-banner">R² = 1 - [ Σ(y - y_pred)² / Σ(y - y_mean)² ]</div>
+                                    <div class="doc-section-block">
+                                        <div class="doc-section-label">What it Measures</div>
+                                        <p class="doc-section-text">Quantifies the proportion of price variance explained by input technical features compared to a simple historical mean line.</p>
+                                    </div>
+                                </div>
+                                <div class="doc-callout-amber">
+                                    <p class="doc-callout-text">
+                                        <strong>💡 Investor Takeaway:</strong> Statistical fit grade. 1.0 is a perfect fit; 0 means the model performs no better than guessing the historical average price.
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- PANE 2: Visual Charts Guide -->
+                    <div id="docChartsTab" class="guide-tab-pane">
+                        <div class="guide-grid-2col">
+
+                            <!-- Chart 1: Performance Radar -->
+                            <div class="doc-card">
+                                <div>
+                                    <div class="doc-card-header">
+                                        <h3 class="doc-card-title">
+                                            <i class="fas fa-chart-radar text-primary"></i> Performance Radar Web
+                                        </h3>
+                                        <span class="doc-pill doc-pill-purple">Radar Chart</span>
+                                    </div>
+                                    <div class="doc-section-block mt-3">
+                                        <div class="doc-section-label">Visualization Purpose</div>
+                                        <p class="doc-section-text">Plots a model's score across Accuracy, Direction, Confidence, and AI Score on a 360-degree radial grid.</p>
+                                    </div>
+                                </div>
+                                <div class="doc-callout-blue">
+                                    <p class="doc-callout-text">
+                                        <strong>🔍 How to Read:</strong> The model whose shaded color area covers <em>more surface area of the web</em> is the superior overall model.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Chart 2: Error Bar Chart -->
+                            <div class="doc-card">
+                                <div>
+                                    <div class="doc-card-header">
+                                        <h3 class="doc-card-title">
+                                            <i class="fas fa-chart-column text-warning"></i> Error Metrics Bar Chart
+                                        </h3>
+                                        <span class="doc-pill doc-pill-orange">Grouped Bar</span>
+                                    </div>
+                                    <div class="doc-section-block mt-3">
+                                        <div class="doc-section-label">Visualization Purpose</div>
+                                        <p class="doc-section-text">Compares raw error figures (RMSE, MAE, MAPE) between Linear Regression and LSTM models side-by-side.</p>
+                                    </div>
+                                </div>
+                                <div class="doc-callout-blue">
+                                    <p class="doc-callout-text">
+                                        <strong>🔍 How to Read:</strong> Since these are error values, <em>shorter bars mean smaller errors</em> and higher prediction accuracy.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Chart 3: Price Line Chart -->
+                            <div class="doc-card">
+                                <div>
+                                    <div class="doc-card-header">
+                                        <h3 class="doc-card-title">
+                                            <i class="fas fa-chart-line text-success"></i> Stock Price Line Chart
+                                        </h3>
+                                        <span class="doc-pill doc-pill-green">Area Line</span>
+                                    </div>
+                                    <div class="doc-section-block mt-3">
+                                        <div class="doc-section-label">Visualization Purpose</div>
+                                        <p class="doc-section-text">Visualizes historical daily closing prices along with model prediction trajectory over time.</p>
+                                    </div>
+                                </div>
+                                <div class="doc-callout-blue">
+                                    <p class="doc-callout-text">
+                                        <strong>🔍 How to Read:</strong> An upward trend slope signifies Bullish growth; a downward slope indicates Bearish decline.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Chart 4: RSI Oscillator -->
+                            <div class="doc-card">
+                                <div>
+                                    <div class="doc-card-header">
+                                        <h3 class="doc-card-title">
+                                            <i class="fas fa-wave-square text-purple"></i> RSI Oscillator (0-100)
+                                        </h3>
+                                        <span class="doc-pill doc-pill-blue">Momentum Line</span>
+                                    </div>
+                                    <div class="doc-section-block mt-3">
+                                        <div class="doc-section-label">Visualization Purpose</div>
+                                        <p class="doc-section-text">Tracks buying and selling speed bounded on a fixed scale of 0 to 100 with threshold reference lines.</p>
+                                    </div>
+                                </div>
+                                <div class="doc-callout-blue">
+                                    <p class="doc-callout-text">
+                                        <strong>🔍 How to Read:</strong> Above 70 = Overbought (likely price drop). Below 30 = Oversold (likely price bounce).
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Chart 5: MACD Momentum -->
+                            <div class="doc-card">
+                                <div>
+                                    <div class="doc-card-header">
+                                        <h3 class="doc-card-title">
+                                            <i class="fas fa-sliders text-teal"></i> MACD & Histogram
+                                        </h3>
+                                        <span class="doc-pill doc-pill-purple">Crossover Bars</span>
+                                    </div>
+                                    <div class="doc-section-block mt-3">
+                                        <div class="doc-section-label">Visualization Purpose</div>
+                                        <p class="doc-section-text">Measures short-term vs long-term exponential moving average convergence and divergence.</p>
+                                    </div>
+                                </div>
+                                <div class="doc-callout-blue">
+                                    <p class="doc-callout-text">
+                                        <strong>🔍 How to Read:</strong> Green bars above 0 indicate growing Bullish momentum; red bars below zero indicate Bearish weakness.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Chart 6: Bollinger Bands -->
+                            <div class="doc-card">
+                                <div>
+                                    <div class="doc-card-header">
+                                        <h3 class="doc-card-title">
+                                            <i class="fas fa-layer-group text-info"></i> Bollinger Bands Envelope
+                                        </h3>
+                                        <span class="doc-pill doc-pill-blue">Band Envelope</span>
+                                    </div>
+                                    <div class="doc-section-block mt-3">
+                                        <div class="doc-section-label">Visualization Purpose</div>
+                                        <p class="doc-section-text">Plots a 20-day SMA middle line bounded by upper and lower bands set 2 standard deviations away.</p>
+                                    </div>
+                                </div>
+                                <div class="doc-callout-blue">
+                                    <p class="doc-callout-text">
+                                        <strong>🔍 How to Read:</strong> Expanding bands signal high market volatility. Price touching outer bands suggests extreme price extension.
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- PANE 3: Quick Cheat-Sheet Table -->
+                    <div id="docTableTab" class="guide-tab-pane">
+                        <div style="overflow-x: auto;">
+                            <table class="doc-table">
+                                <thead>
+                                    <tr>
+                                        <th>Metric Name</th>
+                                        <th>Metric Category</th>
+                                        <th>Optimal Goal</th>
+                                        <th>Primary Financial Purpose</th>
+                                        <th>Risk Signaled</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Prediction Accuracy</strong></td>
+                                        <td>Percentage Closeness</td>
+                                        <td><span class="doc-pill doc-pill-green">100.0%</span></td>
+                                        <td>Overall forecast accuracy benchmark</td>
+                                        <td>High general prediction error</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Direction Accuracy</strong></td>
+                                        <td>Trend Alignment</td>
+                                        <td><span class="doc-pill doc-pill-green">100.0%</span></td>
+                                        <td>Trading buy/sell trend movement ratio</td>
+                                        <td>Wrong direction trade risk</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>RMSE</strong></td>
+                                        <td>Error Outlier Scale</td>
+                                        <td><span class="doc-pill doc-pill-orange">0.00 (USD)</span></td>
+                                        <td>Penalizes large extreme prediction errors</td>
+                                        <td>Catastrophic price misprediction</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>MAE</strong></td>
+                                        <td>Average Error Offset</td>
+                                        <td><span class="doc-pill doc-pill-orange">0.00 (USD)</span></td>
+                                        <td>Straightforward average dollar error</td>
+                                        <td>Typical day-to-day error offset</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>MAPE</strong></td>
+                                        <td>Normalized Percentage</td>
+                                        <td><span class="doc-pill doc-pill-orange">0.0%</span></td>
+                                        <td>Scale-invariant error comparison across stocks</td>
+                                        <td>Stock price scale bias</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>R² Score</strong></td>
+                                        <td>Statistical Variance Fit</td>
+                                        <td><span class="doc-pill doc-pill-blue">1.00</span></td>
+                                        <td>Feature explanatory power vs historical mean</td>
+                                        <td>Random baseline guessing</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Weighted AI Score</strong></td>
+                                        <td>Composite Master Index</td>
+                                        <td><span class="doc-pill doc-pill-purple">100.0</span></td>
+                                        <td>Aggregated score to select optimal recommended model</td>
+                                        <td>Unreliable model performance</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <script>
+                function switchDocTab(paneId, btnElement) {
+                    // Hide all panes
+                    document.querySelectorAll('.guide-tab-pane').forEach(function(pane) {
+                        pane.classList.remove('active');
+                    });
+                    // Deactivate all buttons
+                    document.querySelectorAll('.guide-pill-btn').forEach(function(btn) {
+                        btn.classList.remove('active');
+                    });
+                    
+                    // Activate target pane and button
+                    var targetPane = document.getElementById(paneId);
+                    if (targetPane) {
+                        targetPane.classList.add('active');
+                    }
+                    if (btnElement) {
+                        btnElement.classList.add('active');
+                    }
+                }
+                </script>
+
             </div>
 
         </div>
@@ -630,6 +1283,19 @@
 <script src="js/comparison.js"></script>
 
 <script>
+function switchGuideTab(tabId, btn) {
+    document.querySelectorAll('.guide-tab-content').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.guide-tab-btn').forEach(b => b.classList.remove('active'));
+    
+    const targetTab = document.getElementById(tabId);
+    if (targetTab) {
+        targetTab.classList.add('active');
+    }
+    if (btn) {
+        btn.classList.add('active');
+    }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
 
     if (typeof initAuthenticatedPage === "function") {

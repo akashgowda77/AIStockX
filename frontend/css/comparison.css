@@ -530,3 +530,262 @@ grid-template-columns:1fr;
 }
 
 }
+
+/* ==========================================================================
+   Knowledge Base & Financial Guide Styling (Production Edition)
+   ========================================================================== */
+
+.guide-master-card {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+}
+
+.guide-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.guide-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    color: #2563eb;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.guide-main-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 4px;
+}
+
+/* Tab Buttons */
+.guide-tab-buttons {
+    display: flex;
+    background: #f1f5f9;
+    padding: 5px;
+    border-radius: 14px;
+    gap: 6px;
+}
+
+.guide-tab-btn {
+    border: none;
+    background: transparent;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #64748b;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.guide-tab-btn:hover {
+    color: #1e293b;
+    background: rgba(255, 255, 255, 0.6);
+}
+
+.guide-tab-btn.active {
+    background: #2563eb;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+/* Tab Content Visibility */
+.guide-tab-content {
+    display: none;
+}
+
+.guide-tab-content.active {
+    display: block;
+    animation: fadeInTab 0.35s ease forwards;
+}
+
+@keyframes fadeInTab {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Grid Layout */
+.guide-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 22px;
+    margin-top: 10px;
+}
+
+/* Individual Metric Cards */
+.metric-guide-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.metric-guide-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 28px rgba(37, 99, 235, 0.08);
+    border-color: #93c5fd;
+}
+
+.metric-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.metric-icon-wrapper {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+/* Background & Icon Color Utilities */
+.bg-blue-light { background: #eff6ff; }
+.text-blue { color: #2563eb; }
+
+.bg-purple-light { background: #f3e8ff; }
+.text-purple { color: #9333ea; }
+
+.bg-red-light { background: #fef2f2; }
+.text-red { color: #dc2626; }
+
+.bg-amber-light { background: #fffbeb; }
+.text-amber { color: #d97706; }
+
+.bg-teal-light { background: #f0fdf4; }
+.text-teal { color: #0d9488; }
+
+.bg-indigo-light { background: #eef2ff; }
+.text-indigo { color: #4f46e5; }
+
+.bg-green-light { background: #f0fdf4; }
+.text-green { color: #16a34a; }
+
+/* Tags */
+.metric-tag {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.tag-green { background: #dcfce7; color: #15803d; }
+.tag-orange { background: #ffedd5; color: #c2410c; }
+.tag-blue { background: #dbeafe; color: #1e40af; }
+.tag-purple { background: #f3e8ff; color: #7e22ce; }
+
+.metric-name {
+    font-size: 17px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 8px;
+}
+
+.metric-formula-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin: 8px 0 12px 0;
+}
+
+.metric-formula-box code {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: #2563eb;
+    word-break: break-word;
+}
+
+.chart-type-badge {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    background: #f1f5f9;
+    padding: 4px 10px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.metric-desc {
+    font-size: 13px;
+    line-height: 1.55;
+    color: #475569;
+    margin-bottom: 14px;
+}
+
+.metric-insight-box {
+    background: #fffbeb;
+    border-left: 3.5px solid #f59e0b;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    color: #92400e;
+    line-height: 1.45;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.metric-insight-box i {
+    font-size: 14px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+    .guide-header-flex {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .guide-tab-buttons {
+        width: 100%;
+        justify-content: space-between;
+    }
+    .guide-tab-btn {
+        flex: 1;
+        justify-content: center;
+    }
+    .guide-cards-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
