@@ -92,9 +92,6 @@ async function loadStock() {
         document.getElementById('volumeChartSection').classList.remove('hidden');
         document.getElementById('indicatorsSection').classList.remove('hidden');
 
-        // Fetch & render FinBERT News Sentiment
-        loadSentiment(symbol);
-
     } catch (error) {
         document.getElementById('stockLoading').classList.add('hidden');
         document.getElementById('stockError').classList.remove('hidden');
@@ -103,86 +100,11 @@ async function loadStock() {
 }
 
 function hideAllSections() {
-    ['stockHeader', 'stockOverview', 'priceChartSection', 'volumeChartSection', 'indicatorsSection', 'sentimentSection'].forEach(id => {
+    ['stockHeader', 'stockOverview', 'priceChartSection', 'volumeChartSection', 'indicatorsSection'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.add('hidden');
     });
 }
-
-async function loadSentiment(symbol) {
-    try {
-        const sentimentRes = await newsApi.getSentiment(symbol, 10);
-        if (sentimentRes) {
-            renderSentiment(sentimentRes);
-        }
-    } catch (err) {
-        console.warn("Failed to load sentiment:", err);
-    }
-}
-
-function renderSentiment(data) {
-    const section = document.getElementById('sentimentSection');
-    if (!section || !data) return;
-
-    const score = data.overall_sentiment_score || 0.0;
-    const label = data.overall_sentiment_label || 'Neutral';
-    const dist = data.sentiment_distribution || { bullish: 0, neutral: 0, bearish: 0 };
-    const news = data.news || [];
-    const total = (dist.bullish + dist.neutral + dist.bearish) || 1;
-
-    const scoreEl = document.getElementById('overallSentimentScore');
-    const badgeEl = document.getElementById('overallSentimentBadge');
-
-    if (scoreEl) {
-        scoreEl.textContent = (score >= 0 ? '+' : '') + score.toFixed(2);
-        scoreEl.style.color = score >= 0.15 ? '#10b981' : (score <= -0.15 ? '#ef4444' : '#9ca3af');
-    }
-
-    if (badgeEl) {
-        badgeEl.textContent = label;
-        badgeEl.className = `badge ${label === 'Bullish' ? 'badge-success' : (label === 'Bearish' ? 'badge-danger' : 'badge-info')}`;
-    }
-
-    const gBull = document.getElementById('gaugeBullish');
-    const gNeu = document.getElementById('gaugeNeutral');
-    const gBear = document.getElementById('gaugeBearish');
-
-    if (gBull) gBull.style.width = `${((dist.bullish / total) * 100).toFixed(1)}%`;
-    if (gNeu) gNeu.style.width = `${((dist.neutral / total) * 100).toFixed(1)}%`;
-    if (gBear) gBear.style.width = `${((dist.bearish / total) * 100).toFixed(1)}%`;
-
-    const cBull = document.getElementById('countBullish');
-    const cNeu = document.getElementById('countNeutral');
-    const cBear = document.getElementById('countBearish');
-
-    if (cBull) cBull.textContent = dist.bullish;
-    if (cNeu) cNeu.textContent = dist.neutral;
-    if (cBear) cBear.textContent = dist.bearish;
-
-    const feed = document.getElementById('newsHeadlinesFeed');
-    if (feed) {
-        feed.innerHTML = news.map(item => {
-            const itemScore = item.sentiment_score || 0.0;
-            const itemLabel = item.sentiment_label || 'Neutral';
-            const badgeClass = itemLabel === 'Bullish' ? 'badge-success' : (itemLabel === 'Bearish' ? 'badge-danger' : 'badge-info');
-            const dateStr = item.datetime ? new Date(item.datetime).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Recent';
-
-            return `
-                <div class="news-item-card" style="padding:14px;background:var(--color-bg);border-radius:var(--radius-md);border:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;align-items:flex-start;gap:16px;">
-                    <div style="flex:1;">
-                        <div style="font-size:0.95rem;font-weight:600;margin-bottom:6px;line-height:1.4;">
-                            <a href="${item.url}" target="_blank" rel="noopener" style="color:var(--color-text-primary);text-decoration:none;transition:color 0.2s;">
-                                ${item.headline} <i class="fas fa-external-link-alt" style="font-size:0.75rem;color:var(--color-text-muted);margin-left:4px;"></i>
-                            </a>
-                        </div>
-                        ${item.summary ? `<p style="font-size:0.85rem;color:var(--color-text-secondary);margin-bottom:8px;line-height:1.4;">${item.summary.substring(0, 140)}...</p>` : ''}
-                        <div style="font-size:0.75rem;color:var(--color-text-muted);display:flex;gap:12px;align-items:center;">
-                            <span><i class="fas fa-building"></i> ${item.source}</span>
-                            <span><i class="far fa-clock"></i> ${dateStr}</span>
-                            <span><i class="fas fa-microchip"></i> Confidence: ${(item.confidence * 100).toFixed(0)}%</span>
-                        </div>
-                    </div>
-                    <div style="text-align:right;white-space:nowrap;">
                         <span class="badge ${badgeClass}" style="font-weight:700;">${itemLabel}</span>
                         <div style="font-size:0.85rem;font-weight:700;margin-top:6px;color:${itemScore >= 0.15 ? '#10b981' : (itemScore <= -0.15 ? '#ef4444' : '#9ca3af')};">
                             ${(itemScore >= 0 ? '+' : '') + itemScore.toFixed(2)}
