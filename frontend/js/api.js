@@ -197,13 +197,27 @@ const healthApi = {
 };
 
 // =============================================================================
-// News & FinBERT Sentiment API
+// Portfolio API
 // =============================================================================
 
-const newsApi = {
-    getSentiment(symbol, count = 10) {
-        return request(`/api/v1/news/${symbol}/sentiment`, {
-            params: { count }
+const portfolioApi = {
+    getSummary() {
+        return request('/api/portfolio', { auth: true });
+    },
+
+    trade(symbol, action, quantity) {
+        return request('/api/portfolio/trade', {
+            method: 'POST',
+            auth: true,
+            body: { symbol, action, quantity: Number(quantity) }
         });
+    },
+
+    getTransactions() {
+        return request('/api/portfolio/transactions', { auth: true });
+    },
+
+    reset() {
+        return request('/api/portfolio/reset', { method: 'POST', auth: true });
     },
 };

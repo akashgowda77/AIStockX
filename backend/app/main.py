@@ -17,7 +17,7 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -34,6 +34,7 @@ def health_check():
 # Create DB tables on startup (dev convenience)
 from .database import Base, engine
 from .models.user import User  # noqa: F401
+from .models.portfolio import Portfolio, PortfolioHolding, PortfolioTransaction  # noqa: F401
 
 
 @app.on_event("startup")
@@ -55,7 +56,7 @@ from .routers.indicators import router as indicators_router
 from .routers.prediction import router as prediction_router
 from .routers.model_evaluation import router as model_evaluation_router
 from .routers.prediction_lstm import router as prediction_lstm_router
-from .routers.news import router as news_router
+from .routers.portfolio import router as portfolio_router
 
 # Router registration
 
@@ -65,7 +66,7 @@ app.include_router(indicators_router)
 app.include_router(prediction_router, prefix="/api")
 app.include_router(model_evaluation_router)
 app.include_router(prediction_lstm_router)
-app.include_router(news_router, prefix="/api/v1")
+app.include_router(portfolio_router)
 
 
 
