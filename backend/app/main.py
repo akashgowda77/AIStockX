@@ -34,7 +34,7 @@ def health_check():
 # Create DB tables on startup (dev convenience)
 from .database import Base, engine
 from .models.user import User  # noqa: F401
-from .models.portfolio import Portfolio, PortfolioHolding, PortfolioTransaction  # noqa: F401
+from .models.portfolio import SimulationAccount, SimulatedPosition, SimulatedOrder  # noqa: F401
 
 
 @app.on_event("startup")
