@@ -128,7 +128,7 @@ def execute_order(db: Session, user_id: int, symbol: str, side: str, quantity: f
 
                 # Calculate realized P&L on sold portion
                 realized_gain = quantity * (execution_price - position.average_buy_price)
-                account.realized_pnl += realized_gain
+                account.realized_pnl = (account.realized_pnl or 0.0) + realized_gain
 
                 # Add cash proceeds
                 account.cash_balance += total_value
@@ -255,7 +255,7 @@ def get_portfolio_summary(db: Session, user_id: int) -> Dict[str, Any]:
         "portfolio_value": round(portfolio_value, 2),
         "total_portfolio_value": round(portfolio_value, 2),
         "total_unrealized_pnl": round(total_unrealized_pnl, 2),
-        "total_realized_pnl": round(account.realized_pnl, 2),
+        "total_realized_pnl": round(account.realized_pnl or 0.0, 2),
         "total_profit_loss": round(total_profit_loss, 2),
         "total_profit_loss_pct": round(total_return_percentage, 2),
         "total_return_percentage": round(total_return_percentage, 2),

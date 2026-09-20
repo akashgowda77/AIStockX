@@ -216,6 +216,8 @@ function renderStatCards(summary) {
     const holdingsVal = summary.total_stock_value ?? 0;
     const totalPnlVal = summary.total_profit_loss ?? 0;
     const totalReturnPctVal = summary.total_return_percentage ?? summary.total_profit_loss_pct ?? 0;
+    const realizedPnlVal = summary.total_realized_pnl ?? 0;
+    const unrealizedPnlVal = summary.total_unrealized_pnl ?? 0;
 
     const netWorth = document.getElementById('valNetWorth');
     const cashBal = document.getElementById('valCashBalance');
@@ -223,17 +225,26 @@ function renderStatCards(summary) {
     const totalPnl = document.getElementById('valTotalPnl');
     const pnlSub = document.getElementById('valTotalPnlSub');
 
-    if (netWorth) netWorth.textContent = `$${netWorthVal.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
-    if (cashBal) cashBal.textContent = `$${cashBalVal.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
-    if (holdingsElem) holdingsElem.textContent = `$${holdingsVal.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+    if (netWorth) netWorth.textContent = `$${netWorthVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    if (cashBal) cashBal.textContent = `$${cashBalVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    if (holdingsElem) holdingsElem.textContent = `$${holdingsVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
     if (totalPnl) {
         const isPos = totalPnlVal >= 0;
+        const sign = isPos ? '+' : '-';
+        const pctSign = totalReturnPctVal >= 0 ? '+' : '-';
         totalPnl.className = `stat-card-val ${isPos ? 'stat-pnl-positive' : 'stat-pnl-negative'}`;
-        totalPnl.textContent = `${isPos ? '+' : ''}$${Math.abs(totalPnlVal).toLocaleString('en-US', { minimumFractionDigits: 2 })} (${isPos ? '+' : ''}${totalReturnPctVal.toFixed(2)}%)`;
+        totalPnl.textContent = `${sign}$${Math.abs(totalPnlVal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (${pctSign}${Math.abs(totalReturnPctVal).toFixed(2)}%)`;
 
         if (pnlSub) {
-            pnlSub.textContent = `Baseline: $10,000.00`;
+            const relIsPos = realizedPnlVal >= 0;
+            const unrelIsPos = unrealizedPnlVal >= 0;
+            const relSign = relIsPos ? '+' : '-';
+            const unrelSign = unrelIsPos ? '+' : '-';
+            const relStr = `${relSign}$${Math.abs(realizedPnlVal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            const unrelStr = `${unrelSign}$${Math.abs(unrealizedPnlVal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+            pnlSub.innerHTML = `Realized: <span style="font-weight: 600; color: ${relIsPos ? '#10b981' : '#ef4444'};">${relStr}</span> | Unrealized: <span style="font-weight: 600; color: ${unrelIsPos ? '#10b981' : '#ef4444'};">${unrelStr}</span>`;
         }
     }
 }
@@ -258,6 +269,8 @@ function renderHoldingsTable(holdings) {
         const pnl = h.unrealized_pnl ?? h.profit_loss ?? 0;
         const pnlPct = h.unrealized_pnl_pct ?? h.profit_loss_pct ?? 0;
         const isPos = pnl >= 0;
+        const pnlSign = isPos ? '+' : '-';
+        const pctSign = pnlPct >= 0 ? '+' : '-';
         const currentPrice = h.current_price ?? h.average_buy_price ?? 0;
         const totalVal = h.total_market_value ?? h.total_value ?? (h.quantity * currentPrice);
 
@@ -276,7 +289,7 @@ function renderHoldingsTable(holdings) {
                 <td>$${currentPrice.toFixed(2)}</td>
                 <td>$${totalVal.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
                 <td style="font-weight: 600; color: ${isPos ? '#10b981' : '#ef4444'};">
-                    ${isPos ? '+' : ''}$${Math.abs(pnl).toFixed(2)} (${isPos ? '+' : ''}${pnlPct.toFixed(2)}%)
+                    ${pnlSign}$${Math.abs(pnl).toFixed(2)} (${pctSign}${Math.abs(pnlPct).toFixed(2)}%)
                 </td>
                 <td>${aiBadge}</td>
                 <td>
