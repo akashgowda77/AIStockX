@@ -37,17 +37,28 @@ from .models.user import User  # noqa: F401
 from .models.portfolio import SimulationAccount, SimulatedPosition, SimulatedOrder  # noqa: F401
 
 
+from sqlalchemy import text
+
 @app.on_event("startup")
 def on_startup():
-    """Create DB tables.
+    """Create DB tables and run lightweight column migrations.
 
     Input: none
     Output: None
-
-    Note: For a college project, this avoids Alembic setup during early development.
     """
-
     Base.metadata.create_all(bind=engine)
+
+    # Lightweight dev schema migration for SQLite
+    with engine.connect() as conn:
+        for sql in [
+            "ALTER TABLE simulated_orders ADD COLUMN realized_pnl FLOAT",
+            "ALTER TABLE simulation_accounts ADD COLUMN realized_pnl FLOAT DEFAULT 0.0"
+        ]:
+            try:
+                conn.execute(text(sql))
+                conn.commit()
+            except Exception:
+                pass  # Ignore if column already exists
 
 
 from .routers.auth import router as auth_router
