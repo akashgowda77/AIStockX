@@ -83,6 +83,7 @@ def execute_order(db: Session, user_id: int, symbol: str, side: str, quantity: f
                 db.add(account)
                 db.flush()
 
+            order_realized_pnl = None
             if side_upper == "BUY":
                 if account.cash_balance < total_value:
                     raise HTTPException(
@@ -113,6 +114,8 @@ def execute_order(db: Session, user_id: int, symbol: str, side: str, quantity: f
                     )
                     db.add(position)
 
+                msg = f"Successfully executed BUY order for {quantity} shares of {symbol_norm} @ ${execution_price:,.2f}"
+
             elif side_upper == "SELL":
                 position = db.query(SimulatedPosition).filter(
                     SimulatedPosition.account_id == account.id,
@@ -129,6 +132,7 @@ def execute_order(db: Session, user_id: int, symbol: str, side: str, quantity: f
                 # Calculate realized P&L on sold portion
                 realized_gain = quantity * (execution_price - position.average_buy_price)
                 account.realized_pnl = (account.realized_pnl or 0.0) + realized_gain
+                order_realized_pnl = round(realized_gain, 2)
 
                 # Add cash proceeds
                 account.cash_balance += total_value
@@ -136,6 +140,13 @@ def execute_order(db: Session, user_id: int, symbol: str, side: str, quantity: f
 
                 if position.quantity <= 0.0001:
                     db.delete(position)
+
+                if realized_gain > 0:
+                    msg = f"Successfully executed SELL order for {quantity} shares of {symbol_norm} @ ${execution_price:,.2f} (Realized Profit: +${realized_gain:,.2f})"
+                elif realized_gain < 0:
+                    msg = f"Successfully executed SELL order for {quantity} shares of {symbol_norm} @ ${execution_price:,.2f} (Realized Loss: -${abs(realized_gain):,.2f})"
+                else:
+                    msg = f"Successfully executed SELL order for {quantity} shares of {symbol_norm} @ ${execution_price:,.2f} (Realized P&L: $0.00)"
 
             # Record order entry
             order = SimulatedOrder(
@@ -145,6 +156,7 @@ def execute_order(db: Session, user_id: int, symbol: str, side: str, quantity: f
                 quantity=quantity,
                 execution_price=execution_price,
                 total_value=total_value,
+                realized_pnl=order_realized_pnl,
                 status="COMPLETED",
                 created_at=datetime.utcnow()
             )
@@ -155,13 +167,14 @@ def execute_order(db: Session, user_id: int, symbol: str, side: str, quantity: f
 
         return {
             "success": True,
-            "message": f"Successfully executed {side_upper} order for {quantity} shares of {symbol_norm} @ ${execution_price:,.2f}",
+            "message": msg,
             "order_id": order.id,
             "side": side_upper,
             "symbol": symbol_norm,
             "quantity": quantity,
             "execution_price": execution_price,
             "total_value": total_value,
+            "realized_pnl": order_realized_pnl,
             "cash_balance": round(account.cash_balance, 2)
         }
 
@@ -240,6 +253,7 @@ def get_portfolio_summary(db: Session, user_id: int) -> Dict[str, Any]:
             "price_per_share": round(ord.execution_price, 2),
             "total_value": round(ord.total_value, 2),
             "total_amount": round(ord.total_value, 2),
+            "realized_pnl": round(ord.realized_pnl, 2) if getattr(ord, 'realized_pnl', None) is not None else None,
             "status": ord.status,
             "created_at": ord.created_at,
             "timestamp": ord.created_at.isoformat() if hasattr(ord.created_at, 'isoformat') else str(ord.created_at),

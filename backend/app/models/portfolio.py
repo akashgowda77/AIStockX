@@ -54,6 +54,7 @@ class SimulatedOrder(Base):
     quantity: Mapped[float] = mapped_column(Float, nullable=False)
     execution_price: Mapped[float] = mapped_column(Float, nullable=False)
     total_value: Mapped[float] = mapped_column(Float, nullable=False)
+    realized_pnl: Mapped[float | None] = mapped_column(Float, nullable=True, default=None)
     status: Mapped[str] = mapped_column(String(20), default="COMPLETED", nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
 

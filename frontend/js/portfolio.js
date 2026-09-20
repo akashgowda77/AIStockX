@@ -39,8 +39,24 @@ document.addEventListener('DOMContentLoaded', () => {
 async function initPortfolioPage() {
     setupTradeEventListeners();
     await refreshPortfolio();
-    // Default preview symbol
-    fetchSymbolQuote('INFY');
+}
+
+function resetTradeForm() {
+    const symbolInput = document.getElementById('tradeSymbolInput');
+    const qtyInput = document.getElementById('tradeQuantityInput');
+    const previewContainer = document.getElementById('symbolQuotePreview');
+    const costDisplay = document.getElementById('estimatedTotalCost');
+
+    if (symbolInput) symbolInput.value = '';
+    if (qtyInput) qtyInput.value = '';
+    selectedSymbolQuote = null;
+
+    if (previewContainer) {
+        previewContainer.innerHTML = '<div class="text-muted"><i class="fas fa-info-circle"></i> Enter a stock symbol above to view real-time market quote & AI signal.</div>';
+    }
+    if (costDisplay) {
+        costDisplay.textContent = '$0.00';
+    }
 }
 
 function setupTradeEventListeners() {
@@ -182,9 +198,8 @@ async function handleTradeSubmit(event) {
     try {
         const response = await portfolioApi.trade(symbol, currentTradeAction, qty);
         showToast(response.message || 'Trade executed successfully!', 'success');
+        resetTradeForm();
         await refreshPortfolio();
-        if (qtyInput) qtyInput.value = '10';
-        calculateEstimatedCost();
     } catch (err) {
         showToast(err.message || 'Trade execution failed.', 'error');
     } finally {
@@ -365,7 +380,7 @@ function renderTransactionTable(transactions) {
     if (txList.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="6" style="text-align: center; color: var(--color-text-muted); padding: 24px;">
+                <td colspan="7" style="text-align: center; color: var(--color-text-muted); padding: 24px;">
                     No transactions recorded yet.
                 </td>
             </tr>
@@ -381,6 +396,18 @@ function renderTransactionTable(transactions) {
         const price = tx.execution_price ?? tx.price_per_share ?? 0;
         const total = tx.total_value ?? tx.total_amount ?? (tx.quantity * price);
 
+        let pnlCell = '<span class="text-muted">—</span>';
+        if (!isBuy && tx.realized_pnl !== undefined && tx.realized_pnl !== null) {
+            const relPnl = Number(tx.realized_pnl);
+            if (relPnl > 0) {
+                pnlCell = `<span style="font-weight: 700; color: #10b981;"><i class="fas fa-arrow-up"></i> +$${relPnl.toFixed(2)} (Profit)</span>`;
+            } else if (relPnl < 0) {
+                pnlCell = `<span style="font-weight: 700; color: #ef4444;"><i class="fas fa-arrow-down"></i> -$${Math.abs(relPnl).toFixed(2)} (Loss)</span>`;
+            } else {
+                pnlCell = `<span style="font-weight: 600; color: var(--color-text-muted);">$0.00</span>`;
+            }
+        }
+
         return `
             <tr>
                 <td><small>${dateStr}</small></td>
@@ -393,6 +420,7 @@ function renderTransactionTable(transactions) {
                 <td>${tx.quantity}</td>
                 <td>$${price.toFixed(2)}</td>
                 <td><strong>$${total.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong></td>
+                <td>${pnlCell}</td>
             </tr>
         `;
     }).join('');

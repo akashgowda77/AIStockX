@@ -147,8 +147,12 @@ def test_7_average_buy_price_calculation():
 def test_8_realized_pnl():
     db = get_test_db()
     portfolio_service.execute_order(db, user_id=1, symbol="AAPL", side="BUY", quantity=10.0)
-    portfolio_service.execute_order(db, user_id=1, symbol="AAPL", side="SELL", quantity=5.0)
+    sell_res = portfolio_service.execute_order(db, user_id=1, symbol="AAPL", side="SELL", quantity=5.0)
     
+    assert sell_res["success"] is True
+    assert "realized_pnl" in sell_res
+    assert "Realized" in sell_res["message"]
+
     summary = portfolio_service.get_portfolio_summary(db, user_id=1)
     assert "total_realized_pnl" in summary
     assert isinstance(summary["total_realized_pnl"], float)

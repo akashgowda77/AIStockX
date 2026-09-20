@@ -126,17 +126,17 @@
                             <div class="grid grid-2 gap-4 mb-4">
                                 <div class="form-group">
                                     <label class="form-label" for="tradeSymbolInput">Stock Symbol</label>
-                                    <input type="text" id="tradeSymbolInput" class="form-input" placeholder="e.g. INFY, INTC, AAPL, TSLA" value="INFY" required>
+                                    <input type="text" id="tradeSymbolInput" class="form-input" placeholder="e.g. INFY, INTC, AAPL, TSLA" required>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label" for="tradeQuantityInput">Shares Quantity</label>
-                                    <input type="number" id="tradeQuantityInput" class="form-input" min="1" step="any" value="10" required>
+                                    <input type="number" id="tradeQuantityInput" class="form-input" min="1" step="any" placeholder="e.g. 10" required>
                                 </div>
                             </div>
 
                             <!-- Live Quote & AI Recommendation Preview -->
                             <div id="symbolQuotePreview" class="symbol-quote-preview">
-                                <div class="text-muted"><i class="fas fa-spinner fa-spin"></i> Fetching quote...</div>
+                                <div class="text-muted"><i class="fas fa-info-circle"></i> Enter a stock symbol above to view real-time market quote & AI signal.</div>
                             </div>
 
                             <!-- Cost Calculator Box -->
@@ -209,11 +209,12 @@
                                         <th>Shares</th>
                                         <th>Price per Share</th>
                                         <th>Total Amount</th>
+                                        <th>Realized P&L</th>
                                     </tr>
                                 </thead>
                                 <tbody id="transactionTableBody">
                                     <tr>
-                                        <td colspan="6" style="text-align: center; color: var(--color-text-muted); padding: 24px;">
+                                        <td colspan="7" style="text-align: center; color: var(--color-text-muted); padding: 24px;">
                                             <i class="fas fa-spinner fa-spin"></i> Loading transactions...
                                         </td>
                                     </tr>
