@@ -23,9 +23,8 @@ let metricsChart = null;
  *********************************************************************/
 
 document.addEventListener("DOMContentLoaded", () => {
-
+    initAuthenticatedPage('comparison');
     initComparisonPage();
-
 });
 
 

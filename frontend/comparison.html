@@ -29,62 +29,41 @@
 
     <!-- ================= Sidebar ================= -->
 
-    <aside class="sidebar" id="sidebar">
-
-        <div class="sidebar-brand">
-            <div class="brand-icon">
-                AI
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-icon">AI</div>
+                <div class="brand-text">AIStock<span>X</span></div>
             </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">Main</div>
+                <a href="dashboard.html" class="nav-item" data-page="dashboard">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="stock.html" class="nav-item" data-page="stock">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Stock Analysis</span>
+                </a>
+                <a href="prediction.html" class="nav-item" data-page="prediction">
+                    <i class="fas fa-brain"></i>
+                    <span>AI Predictions</span>
+                </a>
+                <a href="comparison.html" class="nav-item active" data-page="comparison">
+                    <i class="fas fa-balance-scale"></i>
+                    <span>Model Comparison</span>
+                </a>
+                <a href="portfolio.html" class="nav-item" data-page="portfolio">
+                    <i class="fas fa-wallet"></i>
+                    <span>Portfolio Simulator</span>
+                </a>
 
-            <div class="brand-text">
-                AIStock<span>X</span>
-            </div>
-        </div>
-
-        <nav class="sidebar-nav">
-
-            <div class="nav-section">
-                Main
-            </div>
-
-            <a href="dashboard.html" class="nav-item">
-                <i class="fas fa-th-large"></i>
-                <span>Dashboard</span>
-            </a>
-
-            <a href="stock.html" class="nav-item">
-                <i class="fas fa-chart-line"></i>
-                <span>Stock Analysis</span>
-            </a>
-
-            <a href="prediction.html" class="nav-item">
-                <i class="fas fa-brain"></i>
-                <span>AI Predictions</span>
-            </a>
-
-            <a href="comparison.html"
-               class="nav-item active">
-
-                <i class="fas fa-scale-balanced"></i>
-
-                <span>Model Comparison</span>
-
-            </a>
-
-            <a href="portfolio.html" class="nav-item" data-page="portfolio">
-                <i class="fas fa-wallet"></i>
-                <span>Portfolio Simulator</span>
-            </a>
-
-            <div class="nav-section" style="margin-top: 24px;">Account</div>
-            <button class="nav-item nav-item-logout" onclick="handleLogout()" title="Sign Out">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Sign Out</span>
-            </button>
-
-        </nav>
-
-    </aside>
+                <div class="nav-section" style="margin-top: 24px;">Account</div>
+                <button type="button" class="nav-item nav-item-logout" onclick="handleLogout()" title="Sign Out">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sign Out</span>
+                </button>
+            </nav>
+        </aside>
 
     <!-- ================= Main ================= -->
 
