@@ -348,11 +348,6 @@ Contributions, suggestions, and feature requests are welcome.
 
 Fork the repository, create a feature branch, and submit a Pull Request.
 
----
-
-# 📜 License
-
-This project is licensed under the MIT License.
 
 ---
 
