@@ -71,11 +71,10 @@ async function searchStock() {
             // Store selected stock
             setSelectedStock(stockData);
 
-            // Fetch company info, quote, and news sentiment in parallel
+            // Fetch company info and quote in parallel
             await Promise.all([
                 fetchCompanyInfo(stockData.symbol),
                 fetchQuote(stockData.symbol),
-                fetchDashSentiment(stockData.symbol),
             ]);
 
             stockInfoDiv.classList.remove('hidden');

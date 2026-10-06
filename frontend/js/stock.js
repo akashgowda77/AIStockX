@@ -105,18 +105,6 @@ function hideAllSections() {
         if (el) el.classList.add('hidden');
     });
 }
-                        <span class="badge ${badgeClass}" style="font-weight:700;">${itemLabel}</span>
-                        <div style="font-size:0.85rem;font-weight:700;margin-top:6px;color:${itemScore >= 0.15 ? '#10b981' : (itemScore <= -0.15 ? '#ef4444' : '#9ca3af')};">
-                            ${(itemScore >= 0 ? '+' : '') + itemScore.toFixed(2)}
-                        </div>
-                    </div>
-                </div>
-            `;
-        }).join('');
-    }
-
-    section.classList.remove('hidden');
-}
 
 // =============================================================================
 // Stock Header
