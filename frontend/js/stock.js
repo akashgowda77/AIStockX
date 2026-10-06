@@ -61,15 +61,20 @@ async function loadStock() {
     document.getElementById('stockError').classList.add('hidden');
 
     try {
-        // Fetch all data in parallel
-        const [companyRes, quoteRes, historyRes, indicatorsRes] = await Promise.all([
+        // Fetch all data in parallel safely
+        const [companyResult, quoteResult, historyResult, indicatorsResult] = await Promise.allSettled([
             stocksApi.getCompany(symbol),
             stocksApi.getQuote(symbol),
             stocksApi.getHistory(symbol, currentPeriod, '1d'),
             indicatorsApi.getIndicators(symbol),
         ]);
 
-        historyData = historyRes.success ? historyRes.data.history : [];
+        const companyRes = companyResult.status === 'fulfilled' ? companyResult.value : { success: false };
+        const quoteRes = quoteResult.status === 'fulfilled' ? quoteResult.value : { success: false };
+        const historyRes = historyResult.status === 'fulfilled' ? historyResult.value : { success: false };
+        const indicatorsRes = indicatorsResult.status === 'fulfilled' ? indicatorsResult.value : { success: false };
+
+        historyData = (historyRes && historyRes.success && historyRes.data) ? (historyRes.data.history || []) : [];
         indicatorData = indicatorsRes;
 
         // Hide loading

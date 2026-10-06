@@ -42,13 +42,9 @@ async function loadUserProfile() {
             updateNavbarUser(response.data);
         }
     } catch (error) {
-        // Token expired or invalid
-        if (error.status === 401) {
-            clearAll();
-            if (window.location.pathname.includes('dashboard')) {
-                window.location.href = 'login.html';
-            }
-        }
+        // Token expired, invalid or unauthenticated
+        clearAll();
+        window.location.href = 'login.html';
     }
 }
 

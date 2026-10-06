@@ -71,8 +71,8 @@ async function searchStock() {
             // Store selected stock
             setSelectedStock(stockData);
 
-            // Fetch company info and quote in parallel
-            await Promise.all([
+            // Fetch company info and quote in parallel safely
+            await Promise.allSettled([
                 fetchCompanyInfo(stockData.symbol),
                 fetchQuote(stockData.symbol),
             ]);
